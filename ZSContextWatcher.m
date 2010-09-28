@@ -67,7 +67,10 @@
 - (void)contextUpdated:(NSNotification*)notification
 {
   NSManagedObjectContext *incomingContext = [notification object];
-  if ([incomingContext persistentStoreCoordinator] != [self persistentStoreCoordinator]) return;
+  NSPersistentStoreCoordinator *incomingCoordinator = [incomingContext persistentStoreCoordinator];
+  if (incomingCoordinator != [self persistentStoreCoordinator]) {
+    return;
+  }
   if ([self reference]) {
     DLog(@"%@ entered", [self reference]);
   }
@@ -98,7 +101,7 @@
     if ([self reference]) {
       DLog(@"%@++++++++++firing action", [self reference]);
     }
-    [[self delegate] performSelector:[self action] withObject:self withObject:results];
+    [[self delegate] performSelectorOnMainThread:[self action] withObject:self waitUntilDone:YES];
   } else {
     if ([self reference]) {
       DLog(@"%@----------delegate doesn't respond", [self reference]);
