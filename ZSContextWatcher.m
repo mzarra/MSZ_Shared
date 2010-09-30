@@ -75,11 +75,11 @@
     DLog(@"%@ entered", [self reference]);
   }
   NSMutableSet *inserted = [[[notification userInfo] objectForKey:NSInsertedObjectsKey] mutableCopy];
-  [inserted filterUsingPredicate:[self masterPredicate]];
+  if ([self masterPredicate]) [inserted filterUsingPredicate:[self masterPredicate]];
   NSMutableSet *deleted = [[[notification userInfo] objectForKey:NSDeletedObjectsKey] mutableCopy];
-  [deleted filterUsingPredicate:[self masterPredicate]];
+  if ([self masterPredicate]) [deleted filterUsingPredicate:[self masterPredicate]];
   NSMutableSet *updated = [[[notification userInfo] objectForKey:NSUpdatedObjectsKey] mutableCopy];
-  [updated filterUsingPredicate:[self masterPredicate]];
+  if ([self masterPredicate]) [updated filterUsingPredicate:[self masterPredicate]];
   
   NSInteger totalCount = [inserted count] + [deleted count]  + [updated count];
   if (totalCount == 0) {
