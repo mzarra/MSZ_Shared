@@ -33,7 +33,6 @@
 
 #import "ZSImageCacheHandler.h"
 #import "ZSURLConnectionDelegate.h"
-#import "PGAImageCacheMO.h"
 
 @interface ZSImageCacheHandler ()
 
@@ -93,7 +92,7 @@
   return filePath;
 }
 
-- (void)downloadImage:(NSURL*)url unique:(PGAImageCacheMO*)object
+- (void)downloadImage:(NSURL*)url unique:(NSManagedObject*)object
 {
   ZSURLConnectionDelegate *delegate = [[self currentRequests] objectForKey:[object objectID]];
   if (delegate) return;
@@ -120,7 +119,7 @@
   [request setPredicate:[NSPredicate predicateWithFormat:@"sourceURL == %@", url]];
   
   NSError *error = nil;
-  PGAImageCacheMO *imageCacheObject = [[moc executeFetchRequest:request error:&error] lastObject];
+  NSManagedObject *imageCacheObject = [[moc executeFetchRequest:request error:&error] lastObject];
   [request release], request = nil;
   ZAssert(error == nil, @"Error fetching cache: %@", error);
   
