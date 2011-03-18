@@ -1,5 +1,5 @@
 /*
- * ZSURLConnectionDelegate.h
+ * ZSImageCacheHandler.h
  *
  * Created by Marcus S. Zarra
  * Copyright Zarra Studos LLC 2010. All rights reserved.
@@ -31,31 +31,28 @@
  *
  */
 
+#define kAssetManager @"kAssetManager"
+#define kImageDownloadComplete @"kImageDownloadComplete"
+
+#define kRemainingCacheItems @"kRemainingCacheItems"
+#define kTotalRequestedCacheItems @"kTotalRequestedCacheItems"
+#define kCurrentCacheState @"kCurrentCacheState"
+#define kLastSampledDownloadSpeed @"kLastSampledDownloadSpeed"
+#define kCurrentNetworkState @"kCurrentNetworkState"
+#define kBookCacheCompleted @"kBookCacheCompleted"
+
 @class ZSURLConnectionDelegate;
 
-void incrementNetworkActivity(id sender);
-void decrementNetworkActivity(id sender);
+@interface ZSAssetManager : NSObject
 
-@interface ZSURLConnectionDelegate : NSOperation 
+- (UIImage*)imageForURL:(NSURL*)url;
+- (NSURL*)localURLForAssetURL:(NSURL*)url;
 
-@property (nonatomic, assign, getter=isVerbose) BOOL verbose;
-@property (nonatomic, assign, getter=isDone) BOOL done;
+- (void)queueAssetsForRetrievalFromURLSet:(NSSet*)urlSet;
+- (void)queueAssetForRetrievalFromURL:(NSURL*)url;
 
-@property (nonatomic, readonly) NSMutableData *data;
-
-@property (nonatomic, retain) id object;
-@property (nonatomic, retain) NSString *filePath;
-@property (nonatomic, retain) NSURL *myURL;
-@property (nonatomic, retain) NSHTTPURLResponse *response;
-@property (nonatomic, retain) id delegate;
-
-@property (nonatomic, assign) SEL successSelector;
-@property (nonatomic, assign) SEL failureSelector;
-
-@property (nonatomic, assign) NSURLConnection *connection;
-@property (nonatomic, assign) NSTimeInterval startTime;
-@property (nonatomic, assign) NSTimeInterval duration;
-
-- (id)initWithURL:(NSURL*)aURL delegate:(id)delegate;
+- (void)clearCaches;
+- (void)flushCache;
+- (void)clearPersistentCacheList;
 
 @end

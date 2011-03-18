@@ -1,0 +1,294 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B678970413328E390022CA67 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B678970313328E390022CA67 /* UIKit.framework */; };
+		B678970613328E390022CA67 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B678970513328E390022CA67 /* Foundation.framework */; };
+		B678970813328E390022CA67 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B678970713328E390022CA67 /* CoreGraphics.framework */; };
+		B678974A133294090022CA67 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B6789746133294090022CA67 /* AppDelegate.m */; };
+		B678974B133294090022CA67 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B6789747133294090022CA67 /* main.m */; };
+		B678974C133294090022CA67 /* RootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B6789749133294090022CA67 /* RootViewController.m */; };
+		B6789755133294950022CA67 /* ZSAssetManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B6789754133294950022CA67 /* ZSAssetManager.m */; };
+		B6789758133294C20022CA67 /* ZSURLConnectionDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B6789757133294C20022CA67 /* ZSURLConnectionDelegate.m */; };
+		B6789762133295A90022CA67 /* ZSReachability.m in Sources */ = {isa = PBXBuildFile; fileRef = B6789761133295A90022CA67 /* ZSReachability.m */; };
+		B678976A133298440022CA67 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B6789769133298440022CA67 /* SystemConfiguration.framework */; };
+		B678976F1332B20C0022CA67 /* NSData+ZSAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = B678976C1332B20B0022CA67 /* NSData+ZSAdditions.m */; };
+		B67897701332B20C0022CA67 /* NSString+ZSAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = B678976E1332B20B0022CA67 /* NSString+ZSAdditions.m */; };
+		B67897721332B2990022CA67 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B67897711332B2990022CA67 /* Security.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B67896FF13328E390022CA67 /* AssetManagerTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AssetManagerTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B678970313328E390022CA67 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		B678970513328E390022CA67 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		B678970713328E390022CA67 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		B678970B13328E390022CA67 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B678970F13328E390022CA67 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
+		B6789745133294090022CA67 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = Classes/AppDelegate.h; sourceTree = SOURCE_ROOT; };
+		B6789746133294090022CA67 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = Classes/AppDelegate.m; sourceTree = SOURCE_ROOT; };
+		B6789747133294090022CA67 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = Classes/main.m; sourceTree = SOURCE_ROOT; };
+		B6789748133294090022CA67 /* RootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RootViewController.h; path = Classes/RootViewController.h; sourceTree = SOURCE_ROOT; };
+		B6789749133294090022CA67 /* RootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RootViewController.m; path = Classes/RootViewController.m; sourceTree = SOURCE_ROOT; };
+		B6789753133294950022CA67 /* ZSAssetManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZSAssetManager.h; path = ../ZSAssetManager.h; sourceTree = "<group>"; };
+		B6789754133294950022CA67 /* ZSAssetManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZSAssetManager.m; path = ../ZSAssetManager.m; sourceTree = "<group>"; };
+		B6789756133294C20022CA67 /* ZSURLConnectionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZSURLConnectionDelegate.h; path = ../ZSURLConnectionDelegate.h; sourceTree = "<group>"; };
+		B6789757133294C20022CA67 /* ZSURLConnectionDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZSURLConnectionDelegate.m; path = ../ZSURLConnectionDelegate.m; sourceTree = "<group>"; };
+		B6789760133295A90022CA67 /* ZSReachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZSReachability.h; path = ../ZSReachability.h; sourceTree = "<group>"; };
+		B6789761133295A90022CA67 /* ZSReachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZSReachability.m; path = ../ZSReachability.m; sourceTree = "<group>"; };
+		B6789769133298440022CA67 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		B678976B1332B20B0022CA67 /* NSData+ZSAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSData+ZSAdditions.h"; path = "../NSData+ZSAdditions.h"; sourceTree = "<group>"; };
+		B678976C1332B20B0022CA67 /* NSData+ZSAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSData+ZSAdditions.m"; path = "../NSData+ZSAdditions.m"; sourceTree = "<group>"; };
+		B678976D1332B20B0022CA67 /* NSString+ZSAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+ZSAdditions.h"; path = "../NSString+ZSAdditions.h"; sourceTree = "<group>"; };
+		B678976E1332B20B0022CA67 /* NSString+ZSAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+ZSAdditions.m"; path = "../NSString+ZSAdditions.m"; sourceTree = "<group>"; };
+		B67897711332B2990022CA67 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B67896FC13328E390022CA67 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B67897721332B2990022CA67 /* Security.framework in Frameworks */,
+				B678976A133298440022CA67 /* SystemConfiguration.framework in Frameworks */,
+				B678970413328E390022CA67 /* UIKit.framework in Frameworks */,
+				B678970613328E390022CA67 /* Foundation.framework in Frameworks */,
+				B678970813328E390022CA67 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B67896F413328E390022CA67 = {
+			isa = PBXGroup;
+			children = (
+				B67897731332B2A60022CA67 /* AssetManager */,
+				B678970913328E390022CA67 /* AssetManagerTest */,
+				B678970213328E390022CA67 /* Frameworks */,
+				B678970013328E390022CA67 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B678970013328E390022CA67 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B67896FF13328E390022CA67 /* AssetManagerTest.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B678970213328E390022CA67 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B67897711332B2990022CA67 /* Security.framework */,
+				B6789769133298440022CA67 /* SystemConfiguration.framework */,
+				B678970313328E390022CA67 /* UIKit.framework */,
+				B678970513328E390022CA67 /* Foundation.framework */,
+				B678970713328E390022CA67 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B678970913328E390022CA67 /* AssetManagerTest */ = {
+			isa = PBXGroup;
+			children = (
+				B6789745133294090022CA67 /* AppDelegate.h */,
+				B6789746133294090022CA67 /* AppDelegate.m */,
+				B6789747133294090022CA67 /* main.m */,
+				B6789748133294090022CA67 /* RootViewController.h */,
+				B6789749133294090022CA67 /* RootViewController.m */,
+				B678970A13328E390022CA67 /* Supporting Files */,
+			);
+			name = AssetManagerTest;
+			sourceTree = "<group>";
+		};
+		B678970A13328E390022CA67 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B678970B13328E390022CA67 /* Info.plist */,
+				B678970F13328E390022CA67 /* Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B67897731332B2A60022CA67 /* AssetManager */ = {
+			isa = PBXGroup;
+			children = (
+				B678976B1332B20B0022CA67 /* NSData+ZSAdditions.h */,
+				B678976C1332B20B0022CA67 /* NSData+ZSAdditions.m */,
+				B678976D1332B20B0022CA67 /* NSString+ZSAdditions.h */,
+				B678976E1332B20B0022CA67 /* NSString+ZSAdditions.m */,
+				B6789760133295A90022CA67 /* ZSReachability.h */,
+				B6789761133295A90022CA67 /* ZSReachability.m */,
+				B6789753133294950022CA67 /* ZSAssetManager.h */,
+				B6789754133294950022CA67 /* ZSAssetManager.m */,
+				B6789756133294C20022CA67 /* ZSURLConnectionDelegate.h */,
+				B6789757133294C20022CA67 /* ZSURLConnectionDelegate.m */,
+			);
+			name = AssetManager;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B67896FE13328E390022CA67 /* AssetManagerTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B678973613328E390022CA67 /* Build configuration list for PBXNativeTarget "AssetManagerTest" */;
+			buildPhases = (
+				B67896FB13328E390022CA67 /* Sources */,
+				B67896FC13328E390022CA67 /* Frameworks */,
+				B67896FD13328E390022CA67 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AssetManagerTest;
+			productName = AssetManagerTest;
+			productReference = B67896FF13328E390022CA67 /* AssetManagerTest.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B67896F613328E390022CA67 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Zarra Studios LLC";
+			};
+			buildConfigurationList = B67896F913328E390022CA67 /* Build configuration list for PBXProject "AssetManagerTest" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B67896F413328E390022CA67;
+			productRefGroup = B678970013328E390022CA67 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B67896FE13328E390022CA67 /* AssetManagerTest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B67896FD13328E390022CA67 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B67896FB13328E390022CA67 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B678974A133294090022CA67 /* AppDelegate.m in Sources */,
+				B678974B133294090022CA67 /* main.m in Sources */,
+				B678974C133294090022CA67 /* RootViewController.m in Sources */,
+				B6789755133294950022CA67 /* ZSAssetManager.m in Sources */,
+				B6789758133294C20022CA67 /* ZSURLConnectionDelegate.m in Sources */,
+				B6789762133295A90022CA67 /* ZSReachability.m in Sources */,
+				B678976F1332B20C0022CA67 /* NSData+ZSAdditions.m in Sources */,
+				B67897701332B20C0022CA67 /* NSString+ZSAdditions.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		B678973413328E390022CA67 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		B678973513328E390022CA67 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvmgcc42;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+		B678973713328E390022CA67 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		B678973813328E390022CA67 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				VALIDATE_PRODUCT = YES;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B67896F913328E390022CA67 /* Build configuration list for PBXProject "AssetManagerTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B678973413328E390022CA67 /* Debug */,
+				B678973513328E390022CA67 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B678973613328E390022CA67 /* Build configuration list for PBXNativeTarget "AssetManagerTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B678973713328E390022CA67 /* Debug */,
+				B678973813328E390022CA67 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B67896F613328E390022CA67 /* Project object */;
+}

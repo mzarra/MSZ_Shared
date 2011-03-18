@@ -32,132 +32,203 @@
  */
 
 #import "ZSURLConnectionDelegate.h"
-#import "ZSImageCacheHandler.h"
 
-@implementation ZSURLConnectionDelegate
+#import <ImageIO/ImageIO.h>
+#import <MobileCoreServices/MobileCoreServices.h>
 
 static NSInteger activityCount;
 
-+ (void)incrementNetworkActivity:(id)sender;
+void incrementNetworkActivity(id sender)
 {
+  if ([[UIApplication sharedApplication] isStatusBarHidden]) return;
+  
   @synchronized ([UIApplication sharedApplication]) {
     ++activityCount;
     [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:YES];
   }
 }
 
-+ (void)decrementNetworkActivity:(id)sender;
+void decrementNetworkActivity(id sender)
 {
+  if ([[UIApplication sharedApplication] isStatusBarHidden]) return;
+  
   @synchronized ([UIApplication sharedApplication]) {
     --activityCount;
     if (activityCount <= 0) {
       [[UIApplication sharedApplication] setNetworkActivityIndicatorVisible:NO];
+      activityCount = 0;
     }
   }
 }
 
+@implementation ZSURLConnectionDelegate
+
+@synthesize verbose;
+@synthesize done;
+
+@synthesize data;
+
+@synthesize object;
+@synthesize filePath;
+@synthesize myURL;
+@synthesize response;
+
+@synthesize successSelector;
+@synthesize failureSelector;
+
+@synthesize delegate;
+@synthesize connection;
+@synthesize startTime;
+@synthesize duration;
+
+static dispatch_queue_t writeQueue;
+static dispatch_queue_t pngQueue;
+
 - (id)initWithURL:(NSURL*)aURL delegate:(id)aDelegate;
 {
+  ZAssert(aURL, @"incoming url is nil");
   if (![super init]) return nil;
   
   delegate = [aDelegate retain];
-  finished = NO;
-  executing = NO;
   [self setMyURL:aURL];
-  retryCount = 0;
+  
+  if (writeQueue == NULL) {
+    writeQueue = dispatch_queue_create("cache write queue", NULL);
+  }
+  
+  if (pngQueue == NULL) {
+    pngQueue = dispatch_queue_create("png generation queue", NULL);
+  }
   
   return self;
 }
 
 - (void)dealloc
 {
+  if ([self isVerbose]) DLog(@"fired");
   connection = nil;
   object = nil;
-  delegate = nil;
-  [myURL release], myURL = nil;
-  [data release], data = nil;
+  
+  MCRelease(delegate);
+  MCRelease(filePath);
+  MCRelease(myURL);
+  MCRelease(data);
+  MCRelease(response);
+
   [super dealloc];
 }
 
-- (BOOL)isConcurrent
+- (void)main
 {
-  return YES;
-}
-
-- (void)start
-{
-  if (![NSThread isMainThread]) {
-    [self performSelectorOnMainThread:@selector(start) withObject:nil waitUntilDone:NO];
-    return;
-  }
+  if ([self isCancelled]) return;
+  ZAssert(![NSThread isMainThread], @"on main thread");
   
-  [ZSURLConnectionDelegate incrementNetworkActivity:self];
-  [self willChangeValueForKey:@"isExecuting"];
-  executing = NO;
-  [self didChangeValueForKey:@"isExecuting"];
+  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+
+  [self setDone:NO];
+  incrementNetworkActivity(self);
   NSURLRequest *request = [NSURLRequest requestWithURL:[self myURL]];
   
-  NSURLConnection *myconn = [[NSURLConnection alloc] initWithRequest:request delegate:self startImmediately:NO];
-  [self setConnection:myconn];
-  [myconn scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
-  [myconn start];
-  [myconn release];  
+  [self setConnection:[NSURLConnection connectionWithRequest:request delegate:self]];
+    
+  do {
+    [pool drain];
+    pool = [[NSAutoreleasePool alloc] init];
+    
+    // Start the run loop but return after each source is handled.
+    SInt32    result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1.0, YES);
+    
+    // If a source explicitly stopped the run loop, or if there are no
+    // sources or timers, go ahead and exit.
+    if ((result == kCFRunLoopRunStopped) || (result == kCFRunLoopRunFinished)) {
+      [self setDone:YES];
+    }
+    
+  } while (![self isDone]);
+ 
+  [pool drain];
 }
 
 - (void)finish
 {
-  [ZSURLConnectionDelegate decrementNetworkActivity:self];
-  [self willChangeValueForKey:@"isExecuting"];
-  executing = NO;
-  [self didChangeValueForKey:@"isExecuting"];
-  
-  [self willChangeValueForKey:@"isFinished"];
-  finished = YES;
-  [self didChangeValueForKey:@"isFinished"];
+  decrementNetworkActivity(self);
+  CFRunLoopStop(CFRunLoopGetCurrent());
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection*)connection
 {
-  if ([[self delegate] respondsToSelector:[self successSelector]]) {
-    [[self delegate] performSelector:[self successSelector] withObject:self];
+  if ([self isCancelled]) {
+    [[self connection] cancel];
+    [self finish];
+    return;
   }
-  [self setDelegate:nil];
+  
+  [self setDuration:([NSDate timeIntervalSinceReferenceDate] - [self startTime])];
+   
+  if (![self filePath]) { // MSZ: Backward compatibility
+    DLog(@"Elfred To Remove - This is being used");
+    if ([[self delegate] respondsToSelector:[self successSelector]]) {
+      [[self delegate] performSelectorOnMainThread:[self successSelector] withObject:self waitUntilDone:YES];
+    }
+    [self finish];
+    return;
+  }
+  
+  NSData *localizedData = [self data];
+  NSString *localizedFilepath = [self filePath];
+  
+  dispatch_sync(writeQueue, ^{
+    NSError *error = nil;
+    ZAssert([localizedData writeToFile:localizedFilepath atomically:NO], @"Failed to write to %@\n%@\n%@", localizedFilepath, [error localizedDescription], [error userInfo]);
+    
+    if (![[self delegate] respondsToSelector:[self successSelector]]) return;
+    
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      [[self delegate] performSelector:[self successSelector] withObject:self];
+    });
+  });
+  
   [self finish];
 }
 
 - (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSHTTPURLResponse*)resp
 {
+  if ([self isCancelled]) {
+    [[self connection] cancel];
+    [self finish];
+    return;
+  }
+  if ([self isVerbose]) DLog(@"fired");
   [self setResponse:resp];
+  MCRelease(data);
   data = [[NSMutableData alloc] init];
+  [self setStartTime:[NSDate timeIntervalSinceReferenceDate]];
 }
 
 - (void)connection:(NSURLConnection*)connection didReceiveData:(NSData*)newData
 {
+  if ([self isCancelled]) {
+    [[self connection] cancel];
+    [self finish];
+    return;
+  }
+  if ([self isVerbose]) DLog(@"fired");
   [data appendData:newData];
 }
 
 - (void)connection:(NSURLConnection*)connection didFailWithError:(NSError*)error
 {
-  ALog(@"Failure %@\nURL: %@", [error localizedDescription], [self myURL]);
+  if ([self isCancelled]) {
+    [[self connection] cancel];
+    [self finish];
+    return;
+  }
+  DLog(@"Failure %@\nURL: %@", [error localizedDescription], [self myURL]);
   if ([[self delegate] respondsToSelector:[self failureSelector]]) {
-    [[self delegate] performSelector:[self failureSelector] withObject:self];
+    [[self delegate] performSelectorOnMainThread:[self failureSelector] withObject:self waitUntilDone:YES];
   }
   [self setDelegate:nil];
   [self finish];
 }
-
-@synthesize isExecuting = executing;
-@synthesize isFinished = finished;
-@synthesize connection;
-@synthesize thumbnail;
-@synthesize retryCount;
-@synthesize myURL;
-@synthesize object;
-@synthesize data;
-@synthesize delegate;
-@synthesize successSelector;
-@synthesize failureSelector;
-@synthesize response;
-@synthesize parseSelector;
 
 @end
