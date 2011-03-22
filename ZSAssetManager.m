@@ -255,6 +255,31 @@ typedef enum {
   } else if (currentNetworkState > ZSNetworkStatePoor) {
     ++currentNetworkState;
   }
+  
+  if (currentNetworkState == ZSNetworkStateOptimal) {
+    [[self assetQueue] setSuspended:NO];
+    [[self assetQueue] setMaxConcurrentOperationCount:4];
+    return;
+  }
+  
+  [[self assetQueue] setMaxConcurrentOperationCount:1];
+  
+  if (currentNetworkState == ZSNetworkStateAverage) {
+    [[self assetQueue] setSuspended:NO];
+    return;
+  }
+  
+  for (ZSURLConnectionDelegate *nextOperation in [[self assetQueue] operations]) {
+    if ([nextOperation isExecuting] || [nextOperation isFinished] || [nextOperation isCancelled]) {
+      DLog(@"skipping operation");
+      continue;
+    }
+    if ([nextOperation queuePriority] == NSOperationQueuePriorityVeryHigh) {
+      DLog(@"still busy with user requests");
+      return;
+    }
+    [[self assetQueue] setSuspended:YES];
+  }
 }
 
 - (void)cacheOperationCompleted:(ZSURLConnectionDelegate*)delegate
@@ -304,6 +329,8 @@ typedef enum {
     if (CACHE_TEST) DLog(@"activating cache");
   }
   
+  [[self assetQueue] setSuspended:NO];
+  
   //If it is currently in the cache queue, promote it
   for (ZSURLConnectionDelegate *operation in [[self assetQueue] operations]) {
     if (![[operation myURL] isEqual:url]) continue;
@@ -320,7 +347,6 @@ typedef enum {
   [delegate setSuccessSelector:@selector(dataReceived:)];
   [delegate setFailureSelector:@selector(requestFailedForDelegate:)];
   [delegate setQueuePriority:NSOperationQueuePriorityNormal];
-  [delegate setThreadPriority:0.0f];
   
   [[self assetQueue] addOperation:delegate];
   
@@ -337,9 +363,7 @@ typedef enum {
     return;
   }
   
-  NSMutableDictionary *userInfo = [NSMutableDictionary dictionary];
-  [userInfo setObject:self forKey:kAssetManager];
-  NSNotification *notification = [NSNotification notificationWithName:kImageDownloadComplete object:[delegate myURL] userInfo:userInfo];
+  NSNotification *notification = [NSNotification notificationWithName:kImageDownloadComplete object:[delegate myURL] userInfo:nil];
   
   [[NSNotificationQueue defaultQueue] enqueueNotification:notification postingStyle:NSPostWhenIdle coalesceMask:NSNotificationCoalescingOnSender forModes:nil];
 

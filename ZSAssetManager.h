@@ -31,15 +31,7 @@
  *
  */
 
-#define kAssetManager @"kAssetManager"
 #define kImageDownloadComplete @"kImageDownloadComplete"
-
-#define kRemainingCacheItems @"kRemainingCacheItems"
-#define kTotalRequestedCacheItems @"kTotalRequestedCacheItems"
-#define kCurrentCacheState @"kCurrentCacheState"
-#define kLastSampledDownloadSpeed @"kLastSampledDownloadSpeed"
-#define kCurrentNetworkState @"kCurrentNetworkState"
-#define kBookCacheCompleted @"kBookCacheCompleted"
 
 @class ZSURLConnectionDelegate;
 
