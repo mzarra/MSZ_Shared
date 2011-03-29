@@ -1,0 +1,3 @@
+[submodule "AssetManagerTest/TouchXML"]
+	path = AssetManagerTest/TouchXML
+	url = https://github.com/TouchCode/TouchXML.git

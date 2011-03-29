@@ -121,42 +121,25 @@ static dispatch_queue_t pngQueue;
 - (void)main
 {
   if ([self isCancelled]) return;
-  ZAssert(![NSThread isMainThread], @"on main thread");
   
-  NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-
-  [self setDone:NO];
   incrementNetworkActivity(self);
   NSURLRequest *request = [NSURLRequest requestWithURL:[self myURL]];
   
   [self setConnection:[NSURLConnection connectionWithRequest:request delegate:self]];
-    
-  do {
-    [pool drain];
-    pool = [[NSAutoreleasePool alloc] init];
-    
-    // Start the run loop but return after each source is handled.
-    SInt32    result = CFRunLoopRunInMode(kCFRunLoopDefaultMode, 1.0, YES);
-    
-    // If a source explicitly stopped the run loop, or if there are no
-    // sources or timers, go ahead and exit.
-    if ((result == kCFRunLoopRunStopped) || (result == kCFRunLoopRunFinished)) {
-      [self setDone:YES];
-    }
-    
-  } while (![self isDone]);
- 
-  [pool drain];
+  
+  CFRunLoopRun();
+  
+  decrementNetworkActivity(self);
 }
 
 - (void)finish
 {
-  decrementNetworkActivity(self);
   CFRunLoopStop(CFRunLoopGetCurrent());
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection*)connection
 {
+  DLog(@"finished for %@", [self myURL]);
   if ([self isCancelled]) {
     [[self connection] cancel];
     [self finish];
@@ -165,7 +148,7 @@ static dispatch_queue_t pngQueue;
   
   [self setDuration:([NSDate timeIntervalSinceReferenceDate] - [self startTime])];
    
-  if (![self filePath]) { // MSZ: Backward compatibility
+  if (![self filePath]) {
     if ([[self delegate] respondsToSelector:[self successSelector]]) {
       [[self delegate] performSelectorOnMainThread:[self successSelector] withObject:self waitUntilDone:YES];
     }

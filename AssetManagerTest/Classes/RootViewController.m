@@ -28,11 +28,25 @@
 
 #import "RootViewController.h"
 
+@interface RootViewController()
+
+@property (nonatomic, retain) NSArray *xmlItems;
+
+@end
+
 @implementation RootViewController
+
+@synthesize xmlItems;
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+}
+
+- (void)populateWithXMLItems:(NSArray*)items
+{
+  [self setXmlItems:items];
+  [[self tableView] reloadData];
 }
 
 #pragma mark -
@@ -40,7 +54,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-  return 0;
+  return [[self xmlItems] count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -48,7 +62,16 @@
   UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kCellIdentifier];
   if (cell == nil) {
     cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kCellIdentifier] autorelease];
+    [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
   }
+  
+//  GDataXMLElement *item = [[self xmlItems] objectAtIndex:[indexPath row]];
+//  GDataXMLElement *title = [[item elementsForName:@"title"] lastObject];
+//  if (!title) {
+//    [[cell textLabel] setText:@"Untitled"];
+//  } else {
+//    [[cell textLabel] setText:[title stringValue]];
+//  }
   
   return cell;
 }

@@ -26,10 +26,14 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 
+#import "ZSAssetManager.h"
+
+#import "RootViewController.h"
 
 @interface AppDelegate : NSObject <UIApplicationDelegate>
 
+@property (nonatomic, retain) ZSAssetManager *assetManager;
+
 @property (nonatomic, retain) UIWindow *window;
-@property (nonatomic, retain) UINavigationController *navigationController;
 
 @end

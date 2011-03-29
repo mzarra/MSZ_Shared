@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B66417B71342A557001EC65F /* GDataXMLNode.m in Sources */ = {isa = PBXBuildFile; fileRef = B66417B51342A557001EC65F /* GDataXMLNode.m */; };
 		B678970413328E390022CA67 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B678970313328E390022CA67 /* UIKit.framework */; };
 		B678970613328E390022CA67 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B678970513328E390022CA67 /* Foundation.framework */; };
 		B678970813328E390022CA67 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B678970713328E390022CA67 /* CoreGraphics.framework */; };
@@ -23,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B66417B51342A557001EC65F /* GDataXMLNode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GDataXMLNode.m; path = Classes/GDataXMLNode.m; sourceTree = "<group>"; };
+		B66417B61342A557001EC65F /* GDataXMLNode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GDataXMLNode.h; path = Classes/GDataXMLNode.h; sourceTree = "<group>"; };
 		B67896FF13328E390022CA67 /* AssetManagerTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AssetManagerTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B678970313328E390022CA67 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		B678970513328E390022CA67 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -97,6 +100,8 @@
 		B678970913328E390022CA67 /* AssetManagerTest */ = {
 			isa = PBXGroup;
 			children = (
+				B66417B51342A557001EC65F /* GDataXMLNode.m */,
+				B66417B61342A557001EC65F /* GDataXMLNode.h */,
 				B6789745133294090022CA67 /* AppDelegate.h */,
 				B6789746133294090022CA67 /* AppDelegate.m */,
 				B6789747133294090022CA67 /* main.m */,
@@ -201,6 +206,7 @@
 				B6789762133295A90022CA67 /* ZSReachability.m in Sources */,
 				B678976F1332B20C0022CA67 /* NSData+ZSAdditions.m in Sources */,
 				B67897701332B20C0022CA67 /* NSString+ZSAdditions.m in Sources */,
+				B66417B71342A557001EC65F /* GDataXMLNode.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,7 +253,9 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = Info.plist;
+				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -260,7 +268,9 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = Prefix.pch;
+				HEADER_SEARCH_PATHS = /usr/include/libxml2;
 				INFOPLIST_FILE = Info.plist;
+				OTHER_LDFLAGS = "-lxml2";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALIDATE_PRODUCT = YES;
 				WRAPPER_EXTENSION = app;

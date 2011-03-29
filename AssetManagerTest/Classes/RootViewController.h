@@ -28,5 +28,6 @@
 
 @interface RootViewController : UITableViewController
 
+- (void)populateWithXMLItems:(NSArray*)items;
 
 @end
