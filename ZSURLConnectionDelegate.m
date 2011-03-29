@@ -166,7 +166,6 @@ static dispatch_queue_t pngQueue;
   [self setDuration:([NSDate timeIntervalSinceReferenceDate] - [self startTime])];
    
   if (![self filePath]) { // MSZ: Backward compatibility
-    DLog(@"Elfred To Remove - This is being used");
     if ([[self delegate] respondsToSelector:[self successSelector]]) {
       [[self delegate] performSelectorOnMainThread:[self successSelector] withObject:self waitUntilDone:YES];
     }

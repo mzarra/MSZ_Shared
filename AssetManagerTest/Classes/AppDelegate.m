@@ -28,6 +28,9 @@
 
 #import "AppDelegate.h"
 #import "RootViewController.h"
+#import "ZSURLConnectionDelegate.h"
+
+#define kFeedHREF @"http://api.flickr.com/services/feeds/groups_pool.gne?id=1621520@N24&lang=en-us&format=rss_200"
 
 @implementation AppDelegate
 
@@ -47,8 +50,25 @@
   [[self window] addSubview:[[self navigationController] view]];
   
   [[self window] makeKeyAndVisible];
-  return YES;
   
+  NSURL *feedURL = [NSURL URLWithString:kFeedHREF];
+  ZSURLConnectionDelegate *delegate = [[ZSURLConnectionDelegate alloc] initWithURL:feedURL delegate:self];
+  [delegate setSuccessSelector:@selector(feedDownloadSuccessful:)];
+  [delegate setFailureSelector:@selector(feedDownloadFailure:)];
+  [[NSOperationQueue mainQueue] addOperation:delegate];
+  MCRelease(delegate);
+  
+  return YES;
+}
+
+- (void)feedDownloadSuccessful:(ZSURLConnectionDelegate*)delegate
+{
+  DLog(@"success!");
+}
+
+- (void)feedDownloadFailure:(NSError*)error
+{
+  ALog(@"Failure: %@", error);
 }
 
 @end
