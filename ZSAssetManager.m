@@ -321,7 +321,7 @@ typedef enum {
 
 - (void)downloadImage:(NSURL*)url
 {
-  if (![[ZSReachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+  if ([[ZSReachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
     if (CACHE_TEST) DLog(@"connection is offline, refusing to download image");
     return;
   } else {
