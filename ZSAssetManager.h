@@ -37,6 +37,8 @@
 
 @interface ZSAssetManager : NSObject
 
+@property (nonatomic, assign, getter=allowBackgroundCaching) BOOL backgroundCaching;
+
 - (UIImage*)imageForURL:(NSURL*)url;
 - (NSURL*)localURLForAssetURL:(NSURL*)url;
 

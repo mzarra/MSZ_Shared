@@ -72,6 +72,7 @@ typedef enum {
 
 @implementation ZSAssetManager
 
+@synthesize allowOSBackgroundCaching;
 @synthesize pendingCacheItems;
 @synthesize totalDownload;
 @synthesize cachePopulationIdentifier;
@@ -82,8 +83,11 @@ typedef enum {
 {
   self = [super init];
   
+  // TODO: Is there a way to avoid object:nil?
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(flushMemoryCaches:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(flushMemoryCaches:) name:UIApplicationDidReceiveMemoryWarningNotification object:[UIApplication shared]];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enteringBackground:) name:UIApplicationDidEnterBackgroundNotification object:[UIApplication shared]];
   
   [self performSelector:@selector(loadPersistentCacheLists) withObject:nil afterDelay:1.0];
   
@@ -310,6 +314,14 @@ typedef enum {
 
 #pragma mark -
 #pragma mark Notifications
+
+- (void)enteringBackground:(NSNotification*)notification
+{
+  DLog(@"object %@", [[notification object] class]);
+  if ([self allowBackgroundCaching]) return;
+  
+  [[self assetQueue] cancelAllOperations];
+}
 
 - (void)reachabilityChanged:(NSNotification*)notification
 {
