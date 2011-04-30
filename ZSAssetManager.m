@@ -35,6 +35,8 @@
 #import "ZSURLConnectionDelegate.h"
 #import "ZSReachability.h"
 
+#import "NSString+ZSAdditions.h"
+
 #define kCachePath @"imageCache"
 
 #define VERBOSE NO
@@ -78,7 +80,7 @@ typedef enum {
 
 - (id)init
 {
-  [super init];
+  self = [super init];
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(flushMemoryCaches:) name:UIApplicationDidReceiveMemoryWarningNotification object:nil];
@@ -129,16 +131,16 @@ typedef enum {
 - (void)clearStaleCacheItems
 {
   DLog(@"clearing stale cache items");
-  NSCalendar *calendar = [NSCalendar currentCalendar];
-  NSDateComponents *dateComponents = [[NSDateComponents alloc] init];
+  
+  NSTimeInterval time = [NSDate timeIntervalSinceReferenceDate];
   
 #ifdef DEBUG
-  [dateComponents setMinute:-5];
+  time -= (5 * 60);
 #else
-  [dateComponents setHour:-24];
+  time -= (24 * 60 * 60);
 #endif
   
-  NSDate *deleteDate = [calendar dateByAddingComponents:dateComponents toDate:[NSDate date] options:0];
+  NSDate *deleteDate = [NSDate dateWithTimeIntervalSinceReferenceDate:time];
   
   NSFileManager *fileManager = [NSFileManager defaultManager];
   
@@ -321,7 +323,7 @@ typedef enum {
 
 - (void)downloadImage:(NSURL*)url
 {
-  if (![[ZSReachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
+  if ([[ZSReachability reachabilityForInternetConnection] currentReachabilityStatus] == NotReachable) {
     if (CACHE_TEST) DLog(@"connection is offline, refusing to download image");
     return;
   } else {

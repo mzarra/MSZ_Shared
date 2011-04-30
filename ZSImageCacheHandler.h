@@ -1,6 +1,8 @@
 /*
  * ZSImageCacheHandler.h
  *
+ * Version: 2.0
+ *
  * Created by Marcus S. Zarra
  * Copyright Zarra Studos LLC 2010. All rights reserved.
  *
@@ -31,29 +33,58 @@
  *
  */
 
-#define kImageItemDownloadedKey @"kImageItemDownloadedKey"
-#define kImageItem @"kImageItem"
+#define kAssetManager @"kAssetManager"
 #define kImageDownloadComplete @"kImageDownloadComplete"
-#define kCachePath @"imageCache"
 
-#import "ZSURLConnectionDelegate.h";
+#define kRemainingCacheItems @"kRemainingCacheItems"
+#define kTotalRequestedCacheItems @"kTotalRequestedCacheItems"
+#define kCurrentCacheState @"kCurrentCacheState"
+#define kLastSampledDownloadSpeed @"kLastSampledDownloadSpeed"
+#define kCurrentNetworkState @"kCurrentNetworkState"
 
-@interface ZSImageCacheHandler : NSObject
-{
-  NSMutableDictionary *currentRequests;
-  NSMutableDictionary *imageCache;
-  NSOperationQueue *operationQueue;
-  NSManagedObjectContext *managedObjectContext;
-  
-  NSString *headshotBaseURLString;
-}
+enum CMNetworkState {
+  kNetworkOptimal = 4,
+  kNetworkAverage = 0,
+  kNetworkPoor = -4
+};
+typedef NSInteger CMNetworkState;
 
-@property (nonatomic, retain) NSString *headshotBaseURLString;
+@class ZSURLConnectionDelegate;
+
+@interface ZSImageCacheHandler : NSObject <NSDiscardableContent>
+
+@property (nonatomic, assign) NSInteger rollingSize;
+
+@property (nonatomic, assign) NSInteger currentNetworkState;
+@property (nonatomic, assign) NSInteger numberOfItemsDownloaded;
+@property (nonatomic, assign) CGFloat totalDownload;
+
+@property (nonatomic, assign) NSInteger numberOfItemsAddedToCacheQueue;
+
+@property (nonatomic, readonly) NSOperationQueue *cachePopulationQueue;
+@property (nonatomic, readonly) NSOperationQueue *operationQueue;
+
+@property (nonatomic, retain) NSArray *storedCacheRequestsArray;
+@property (nonatomic, retain) NSMutableArray *assetsQueuedToCacheArray;
+@property (nonatomic, retain) NSManagedObjectContext *managedObjectContext;
+@property (nonatomic, retain) NSCache *imageReferenceCache;
+@property (nonatomic, retain) NSCache *imageCache;
+
+@property (nonatomic, assign) NSInteger cachePopulationIdentifier;
+@property (nonatomic, assign) NSInteger useCount;
+
++ (id)defaultManagerForContext:(NSManagedObjectContext*)moc;
 
 - (id)initWithManagedObjectContext:(NSManagedObjectContext*)moc;
 
-- (UIImage*)imageForURL:(NSString*)url;
+- (UIImage*)imageForURL:(NSURL*)url;
+- (NSURL*)localURLForAssetURL:(NSURL*)url;
 
-- (NSString*)URLForPlayer:(NSString*)playerID withSize:(CGSize)size;
+- (void)queueAssetForRetrievalFromURL:(NSURL*)url;
+- (void)queueAssetsForRetrievalFromURLSet:(NSSet*)url;
+
+- (void)clearCaches;
+- (void)flushCache;
+- (void)clearPersistentCacheList;
 
 @end

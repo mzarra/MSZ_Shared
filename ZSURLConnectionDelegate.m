@@ -87,7 +87,7 @@ static dispatch_queue_t pngQueue;
 - (id)initWithURL:(NSURL*)aURL delegate:(id)aDelegate;
 {
   ZAssert(aURL, @"incoming url is nil");
-  if (![super init]) return nil;
+  if (!(self = [super init])) return nil;
   
   delegate = [aDelegate retain];
   [self setMyURL:aURL];
