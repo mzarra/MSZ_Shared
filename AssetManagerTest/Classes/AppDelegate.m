@@ -66,6 +66,7 @@
   MCRelease(delegate);
   
   assetManager = [[ZSAssetManager alloc] init];
+	[root setAssetManager:assetManager];
   
   return YES;
 }
@@ -92,6 +93,14 @@
     NSURL *url = [NSURL URLWithString:urlString];
     ZAssert(url, @"Bad url: %@", urlString);
     [cacheRequest addObject:url];
+	  
+    GDataXMLElement *mediaThumbnail = [[item elementsForName:@"media:thumbnail"] lastObject];
+    ZAssert(mediaThumbnail, @"Failed to find media thumbnail: %@", item);
+    
+    NSString *thumbnailURLString = [[mediaThumbnail attributeForName:@"url"] stringValue];
+    NSURL *thumbnailURL = [NSURL URLWithString:thumbnailURLString];
+    ZAssert(thumbnailURL, @"Bad URL: %@", thumbnailURLString);
+    [cacheRequest addObject:thumbnailURL];
   }
   
   [assetManager queueAssetsForRetrievalFromURLSet:cacheRequest];
@@ -110,7 +119,7 @@
 
 - (void)dealloc
 {
-	MCRelease(document);
-	[super dealloc];
+  MCRelease(document);
+  [super dealloc];
 }
 @end

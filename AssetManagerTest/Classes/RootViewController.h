@@ -26,7 +26,11 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 
-@interface RootViewController : UITableViewController
+#import "ZSAssetManager.h"
+
+@interface RootViewController : UITableViewController 
+
+@property (readwrite, retain) ZSAssetManager *assetManager;
 
 - (void)populateWithXMLItems:(NSArray*)items;
 

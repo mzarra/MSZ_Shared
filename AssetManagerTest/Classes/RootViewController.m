@@ -37,15 +37,23 @@
 @implementation RootViewController
 
 @synthesize xmlItems;
+@synthesize assetManager;
 
 - (void)viewDidLoad
 {
   [super viewDidLoad];
+  
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(imageDownloadComplete:) name:kImageDownloadComplete object:[self assetManager]];
 }
 
 - (void)populateWithXMLItems:(NSArray*)items
 {
   [self setXmlItems:items];
+  [[self tableView] reloadData];
+}
+
+- (void)imageDownloadComplete:(NSNotification *)notification
+{
   [[self tableView] reloadData];
 }
 
@@ -65,15 +73,35 @@
     [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
   }
   
-//  GDataXMLElement *item = [[self xmlItems] objectAtIndex:[indexPath row]];
-//  GDataXMLElement *title = [[item elementsForName:@"title"] lastObject];
-//  if (!title) {
-//    [[cell textLabel] setText:@"Untitled"];
-//  } else {
-//    [[cell textLabel] setText:[title stringValue]];
-//  }
+  GDataXMLElement *item = [[self xmlItems] objectAtIndex:[indexPath row]];
+  GDataXMLElement *title = [[item elementsForName:@"title"] lastObject];
+  if (!title) {
+    [[cell textLabel] setText:@"Untitled"];
+  } else {
+    [[cell textLabel] setText:[title stringValue]];
+  }
+  
+  GDataXMLElement *mediaThumbnail = [[item elementsForName:@"media:thumbnail"] lastObject];
+  ZAssert(mediaThumbnail, @"Failed to find media thumbnail: %@", item);
+  
+  NSString *thumbnailURLString = [[mediaThumbnail attributeForName:@"url"] stringValue];
+  NSURL *thumbnailURL = [NSURL URLWithString:thumbnailURLString];
+  [[cell imageView] setImage:[assetManager imageForURL:thumbnailURL]];
   
   return cell;
 }
 
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+  [tableView deselectRowAtIndexPath:indexPath animated:NO];
+}
+
+#pragma mark -
+#pragma mark Memory management
+- (void)dealloc
+{
+  [xmlItems release];
+  [assetManager release];
+  [super dealloc];
+}
 @end
