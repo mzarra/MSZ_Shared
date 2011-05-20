@@ -47,6 +47,7 @@ void decrementNetworkActivity(id sender);
 @property (nonatomic, retain) NSString *filePath;
 @property (nonatomic, retain) NSURL *myURL;
 @property (nonatomic, retain) NSHTTPURLResponse *response;
+@property (readonly) NSInteger HTTPStatus;
 @property (nonatomic, retain) id delegate;
 
 @property (nonatomic, assign) SEL successSelector;

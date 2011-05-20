@@ -64,6 +64,7 @@ void decrementNetworkActivity(id sender)
 @interface ZSURLConnectionDelegate ()
 @property (readwrite, retain) NSString *inProgressFilePath;
 @property (readwrite, retain) NSFileHandle *inProgressFileHandle;
+@property (readwrite) NSInteger HTTPStatus;
 @end
 
 @implementation ZSURLConnectionDelegate
@@ -77,6 +78,7 @@ void decrementNetworkActivity(id sender)
 @synthesize filePath;
 @synthesize myURL;
 @synthesize response;
+@synthesize HTTPStatus;
 
 @synthesize successSelector;
 @synthesize failureSelector;
@@ -182,6 +184,7 @@ static dispatch_queue_t pngQueue;
   }
   if ([self isVerbose]) DLog(@"fired");
   [self setResponse:resp];
+  [self setHTTPStatus:[resp statusCode]];
   
   if ([self filePath]) {
     [self setInProgressFilePath:[self filePath]];
