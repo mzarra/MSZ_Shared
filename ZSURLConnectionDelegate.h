@@ -41,7 +41,7 @@ void decrementNetworkActivity(id sender);
 @property (nonatomic, assign, getter=isVerbose) BOOL verbose;
 @property (nonatomic, assign, getter=isDone) BOOL done;
 
-@property (nonatomic, readonly) NSMutableData *data;
+@property (nonatomic, readonly) NSData *data;
 
 @property (nonatomic, retain) id object;
 @property (nonatomic, retain) NSString *filePath;

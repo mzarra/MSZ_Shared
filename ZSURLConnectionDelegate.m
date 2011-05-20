@@ -61,6 +61,11 @@ void decrementNetworkActivity(id sender)
   }
 }
 
+@interface ZSURLConnectionDelegate ()
+@property (readwrite, retain) NSString *inProgressFilePath;
+@property (readwrite, retain) NSFileHandle *inProgressFileHandle;
+@end
+
 @implementation ZSURLConnectionDelegate
 
 @synthesize verbose;
@@ -80,6 +85,9 @@ void decrementNetworkActivity(id sender)
 @synthesize connection;
 @synthesize startTime;
 @synthesize duration;
+
+@synthesize inProgressFilePath;
+@synthesize inProgressFileHandle;
 
 static dispatch_queue_t writeQueue;
 static dispatch_queue_t pngQueue;
@@ -109,12 +117,19 @@ static dispatch_queue_t pngQueue;
   connection = nil;
   object = nil;
   
+  if (![self filePath]) {
+    // If no filePath was set, don't litter the temp dir with orphaned downloaded files.
+    [[NSFileManager defaultManager] removeItemAtPath:[self inProgressFilePath] error:nil];
+  }
   MCRelease(delegate);
   MCRelease(filePath);
   MCRelease(myURL);
   MCRelease(data);
   MCRelease(response);
 
+  MCRelease(inProgressFilePath);
+  MCRelease(inProgressFileHandle);
+  
   [super dealloc];
 }
 
@@ -139,6 +154,8 @@ static dispatch_queue_t pngQueue;
 
 - (void)connectionDidFinishLoading:(NSURLConnection*)connection
 {
+  [[self inProgressFileHandle] closeFile];
+  
   DLog(@"finished for %@", [self myURL]);
   if ([self isCancelled]) {
     [[self connection] cancel];
@@ -148,28 +165,11 @@ static dispatch_queue_t pngQueue;
   
   [self setDuration:([NSDate timeIntervalSinceReferenceDate] - [self startTime])];
    
-  if (![self filePath]) {
-    if ([[self delegate] respondsToSelector:[self successSelector]]) {
-      [[self delegate] performSelectorOnMainThread:[self successSelector] withObject:self waitUntilDone:YES];
-    }
-    [self finish];
-    return;
+  // Even if filePath was set, the delegate might try to look at the data blob.
+  data = [[NSData alloc] initWithContentsOfMappedFile:[self inProgressFilePath]];
+  if ([[self delegate] respondsToSelector:[self successSelector]]) {
+    [[self delegate] performSelectorOnMainThread:[self successSelector] withObject:self waitUntilDone:YES];
   }
-  
-  NSData *localizedData = [self data];
-  NSString *localizedFilepath = [self filePath];
-  
-  dispatch_sync(writeQueue, ^{
-    NSError *error = nil;
-    ZAssert([localizedData writeToFile:localizedFilepath atomically:NO], @"Failed to write to %@\n%@\n%@", localizedFilepath, [error localizedDescription], [error userInfo]);
-    
-    if (![[self delegate] respondsToSelector:[self successSelector]]) return;
-    
-    dispatch_sync(dispatch_get_main_queue(), ^{
-      [[self delegate] performSelector:[self successSelector] withObject:self];
-    });
-  });
-  
   [self finish];
 }
 
@@ -182,8 +182,15 @@ static dispatch_queue_t pngQueue;
   }
   if ([self isVerbose]) DLog(@"fired");
   [self setResponse:resp];
-  MCRelease(data);
-  data = [[NSMutableData alloc] init];
+  
+  if ([self filePath]) {
+    [self setInProgressFilePath:[self filePath]];
+  } else {
+    [self setInProgressFilePath:[[NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", abs([[[self myURL] absoluteString] hash])]] retain]];
+  }
+  [[NSFileManager defaultManager] removeItemAtPath:[self inProgressFilePath] error:nil];
+  [[NSFileManager defaultManager] createFileAtPath:[self inProgressFilePath] contents:nil attributes:nil];
+  [self setInProgressFileHandle:[NSFileHandle fileHandleForWritingAtPath:[self inProgressFilePath]]];
   [self setStartTime:[NSDate timeIntervalSinceReferenceDate]];
 }
 
@@ -195,11 +202,15 @@ static dispatch_queue_t pngQueue;
     return;
   }
   if ([self isVerbose]) DLog(@"fired");
-  [data appendData:newData];
+  dispatch_sync(writeQueue, ^{
+    [[self inProgressFileHandle] writeData:newData];
+  });
 }
 
 - (void)connection:(NSURLConnection*)connection didFailWithError:(NSError*)error
 {
+  [[self inProgressFileHandle] closeFile];
+  
   if ([self isCancelled]) {
     [[self connection] cancel];
     [self finish];
