@@ -2,6 +2,8 @@
 
 In this repository is code that we share between many projects that we work on.  It is licensed under the BSD license and is free to use as you wish. 
 
+This is a fork of ZDS_Shared with changes to the ZSURLConnectionDelegate to reduce memory usage when downloading large files.
+
 ## Prefix.pch ##
 
 You will probably find macros in this code that does not compile.  The reason is that we have several macros that we add to our Prefix.pch file upon project creation.  Those macros are as follows:
