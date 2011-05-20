@@ -57,6 +57,15 @@ void decrementNetworkActivity(id sender);
 @property (nonatomic, assign) NSTimeInterval startTime;
 @property (nonatomic, assign) NSTimeInterval duration;
 
+@property (nonatomic, assign) BOOL acceptSelfSignedCertificates;
+@property (nonatomic, copy) NSArray *acceptSelfSignedCertificatesFromHosts;
+
+@property (readwrite, retain) id userInfo;
+
+- (id)initWithRequest:(NSURLRequest *)newRequest delegate:(id)delegate;
 - (id)initWithURL:(NSURL*)aURL delegate:(id)delegate;
+
++ (id)operationWithRequest:(NSURLRequest *)newRequest delegate:(id)aDelegate;
++ (id)operationWithURL:(NSURL *)aURL delegate:(id)aDelegate;
 
 @end

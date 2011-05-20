@@ -65,6 +65,7 @@ void decrementNetworkActivity(id sender)
 @property (readwrite, retain) NSString *inProgressFilePath;
 @property (readwrite, retain) NSFileHandle *inProgressFileHandle;
 @property (readwrite) NSInteger HTTPStatus;
+@property (readwrite, retain) NSURLRequest *request;
 @end
 
 @implementation ZSURLConnectionDelegate
@@ -79,6 +80,7 @@ void decrementNetworkActivity(id sender)
 @synthesize myURL;
 @synthesize response;
 @synthesize HTTPStatus;
+@synthesize request;
 
 @synthesize successSelector;
 @synthesize failureSelector;
@@ -91,17 +93,24 @@ void decrementNetworkActivity(id sender)
 @synthesize inProgressFilePath;
 @synthesize inProgressFileHandle;
 
+@synthesize acceptSelfSignedCertificates;
+@synthesize acceptSelfSignedCertificatesFromHosts;
+
+@synthesize userInfo;
+
 static dispatch_queue_t writeQueue;
 static dispatch_queue_t pngQueue;
 
-- (id)initWithURL:(NSURL*)aURL delegate:(id)aDelegate;
+#pragma mark -
+#pragma mark Initializers
+- (id)initWithRequest:(NSURLRequest *)newRequest delegate:(id)aDelegate;
 {
-  ZAssert(aURL, @"incoming url is nil");
   if (!(self = [super init])) return nil;
   
+  request = [newRequest retain];
   delegate = [aDelegate retain];
-  [self setMyURL:aURL];
-  
+  [self setMyURL:[newRequest URL]];
+
   if (writeQueue == NULL) {
     writeQueue = dispatch_queue_create("cache write queue", NULL);
   }
@@ -113,6 +122,26 @@ static dispatch_queue_t pngQueue;
   return self;
 }
 
+- (id)initWithURL:(NSURL*)aURL delegate:(id)aDelegate;
+{
+  ZAssert(aURL, @"incoming url is nil");
+  return [self initWithRequest:[NSURLRequest requestWithURL:aURL] delegate:aDelegate];
+}
+
+#pragma mark -
+#pragma mark Convenience factory methods
++ (id)operationWithRequest:(NSURLRequest *)newRequest delegate:(id)aDelegate
+{
+  return [[[ZSURLConnectionDelegate alloc] initWithRequest:newRequest delegate:aDelegate] autorelease];
+}
+
++ (id)operationWithURL:(NSURL *)aURL delegate:(id)aDelegate
+{
+  return [[[ZSURLConnectionDelegate alloc] initWithURL:aURL delegate:aDelegate] autorelease];
+}
+
+#pragma mark -
+#pragma mark Memory management
 - (void)dealloc
 {
   if ([self isVerbose]) DLog(@"fired");
@@ -127,7 +156,9 @@ static dispatch_queue_t pngQueue;
   MCRelease(filePath);
   MCRelease(myURL);
   MCRelease(data);
+  MCRelease(request);
   MCRelease(response);
+  MCRelease(userInfo);
 
   MCRelease(inProgressFilePath);
   MCRelease(inProgressFileHandle);
@@ -135,14 +166,35 @@ static dispatch_queue_t pngQueue;
   [super dealloc];
 }
 
+#pragma mark -
+#pragma mark Accessors
+- (void)setAcceptSelfSignedCertificates:(BOOL)flag
+{
+  acceptSelfSignedCertificates = flag;
+  if (flag) {
+    // Setting the flag to YES implies trusting self-signed certs from everyone.
+    [acceptSelfSignedCertificatesFromHosts release];
+    acceptSelfSignedCertificatesFromHosts = nil;
+  }
+}
+
+- (void)setAcceptSelfSignedCertificatesFromHosts:(NSArray *)hosts
+{
+  [acceptSelfSignedCertificatesFromHosts release];
+  acceptSelfSignedCertificatesFromHosts = [hosts copy];
+  // Set the flag to NO to turn off accept-from-all behavior, limiting access to only the host list.
+  [self setAcceptSelfSignedCertificates:NO];
+}
+
+#pragma mark -
+#pragma mark Entry point
 - (void)main
 {
   if ([self isCancelled]) return;
   
   incrementNetworkActivity(self);
-  NSURLRequest *request = [NSURLRequest requestWithURL:[self myURL]];
   
-  [self setConnection:[NSURLConnection connectionWithRequest:request delegate:self]];
+  [self setConnection:[NSURLConnection connectionWithRequest:[self request] delegate:self]];
   
   CFRunLoopRun();
   
@@ -154,6 +206,8 @@ static dispatch_queue_t pngQueue;
   CFRunLoopStop(CFRunLoopGetCurrent());
 }
 
+#pragma mark -
+#pragma mark NSURLConnection delegate methods
 - (void)connectionDidFinishLoading:(NSURLConnection*)connection
 {
   [[self inProgressFileHandle] closeFile];
@@ -225,6 +279,24 @@ static dispatch_queue_t pngQueue;
   }
   [self setDelegate:nil];
   [self finish];
+}
+
+- (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace {
+    if (([self acceptSelfSignedCertificates]) || ([[self acceptSelfSignedCertificatesFromHosts] count] > 0)) {
+        return [[protectionSpace authenticationMethod] isEqualToString:NSURLAuthenticationMethodServerTrust];
+    } else {
+        return NO;
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+  if (([self acceptSelfSignedCertificates]) || ([[self acceptSelfSignedCertificatesFromHosts] containsObject:[[challenge protectionSpace] host]])) {
+    if ([[[challenge protectionSpace] authenticationMethod] isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+      [[challenge sender] useCredential:[NSURLCredential credentialForTrust:[[challenge protectionSpace] serverTrust]] forAuthenticationChallenge:challenge];
+    } else {
+      [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+    }
+  }
 }
 
 @end
