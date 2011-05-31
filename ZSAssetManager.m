@@ -86,7 +86,7 @@ typedef enum {
   // TODO: Is there a way to avoid object:nil?
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
   
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(flushMemoryCaches:) name:UIApplicationDidReceiveMemoryWarningNotification object:[UIApplication sharedApplication]];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clearCaches:) name:UIApplicationDidReceiveMemoryWarningNotification object:[UIApplication sharedApplication]];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enteringBackground:) name:UIApplicationDidEnterBackgroundNotification object:[UIApplication sharedApplication]];
   
   [self performSelector:@selector(loadPersistentCacheLists) withObject:nil afterDelay:1.0];
