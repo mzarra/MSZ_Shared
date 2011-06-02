@@ -39,6 +39,8 @@
 
 @property (nonatomic, assign, getter=allowBackgroundCaching) BOOL backgroundCaching;
 
++ (ZSAssetManager *)sharedManager;
+
 - (UIImage*)imageForURL:(NSURL*)url;
 - (NSURL*)localURLForAssetURL:(NSURL*)url;
 
