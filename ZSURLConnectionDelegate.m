@@ -66,6 +66,7 @@ void decrementNetworkActivity(id sender)
 @property (readwrite, retain) NSFileHandle *inProgressFileHandle;
 @property (readwrite) NSInteger HTTPStatus;
 @property (readwrite, retain) NSURLRequest *request;
+@property (readwrite, assign) dispatch_group_t dispatchFileWriteGroup;
 @end
 
 @implementation ZSURLConnectionDelegate
@@ -81,6 +82,7 @@ void decrementNetworkActivity(id sender)
 @synthesize response;
 @synthesize HTTPStatus;
 @synthesize request;
+@synthesize dispatchFileWriteGroup;
 
 @synthesize successSelector;
 @synthesize failureSelector;
@@ -117,6 +119,10 @@ static dispatch_queue_t pngQueue;
   
   if (pngQueue == NULL) {
     pngQueue = dispatch_queue_create("png generation queue", NULL);
+  }
+  
+  if (dispatchFileWriteGroup == NULL) {
+    dispatchFileWriteGroup = dispatch_group_create();
   }
   
   return self;
@@ -159,6 +165,8 @@ static dispatch_queue_t pngQueue;
   MCRelease(request);
   MCRelease(response);
   MCRelease(userInfo);
+
+  dispatch_release([self dispatchFileWriteGroup]);
 
   MCRelease(inProgressFilePath);
   MCRelease(inProgressFileHandle);
@@ -210,6 +218,8 @@ static dispatch_queue_t pngQueue;
 #pragma mark NSURLConnection delegate methods
 - (void)connectionDidFinishLoading:(NSURLConnection*)connection
 {
+  dispatch_group_wait([self dispatchFileWriteGroup], DISPATCH_TIME_FOREVER);
+  
   [[self inProgressFileHandle] closeFile];
   
   DLog(@"finished for %@", [self myURL]);
@@ -259,7 +269,7 @@ static dispatch_queue_t pngQueue;
     return;
   }
   if ([self isVerbose]) DLog(@"fired");
-  dispatch_sync(writeQueue, ^{
+  dispatch_group_async([self dispatchFileWriteGroup], writeQueue, ^{
     [[self inProgressFileHandle] writeData:newData];
   });
 }
