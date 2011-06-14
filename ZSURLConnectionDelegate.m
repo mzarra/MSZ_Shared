@@ -218,25 +218,26 @@ static dispatch_queue_t pngQueue;
 #pragma mark NSURLConnection delegate methods
 - (void)connectionDidFinishLoading:(NSURLConnection*)connection
 {
-  dispatch_group_wait([self dispatchFileWriteGroup], DISPATCH_TIME_FOREVER);
-  
-  [[self inProgressFileHandle] closeFile];
-  
-  DLog(@"finished for %@", [self myURL]);
-  if ([self isCancelled]) {
-    [[self connection] cancel];
+  // Hold the completion block until all outstanding file writes have finished, as indicated by dispatchFileWriteGroup.
+  dispatch_group_notify([self dispatchFileWriteGroup], writeQueue, ^{
+    [[self inProgressFileHandle] closeFile];
+    
+    DLog(@"finished for %@", [self myURL]);
+    if ([self isCancelled]) {
+      [[self connection] cancel];
+      [self finish];
+      return;
+    }
+    
+    [self setDuration:([NSDate timeIntervalSinceReferenceDate] - [self startTime])];
+    
+    // Even if filePath was set, the delegate might try to look at the data blob.
+    data = [[NSData alloc] initWithContentsOfMappedFile:[self inProgressFilePath]];
+    if ([[self delegate] respondsToSelector:[self successSelector]]) {
+      [[self delegate] performSelectorOnMainThread:[self successSelector] withObject:self waitUntilDone:YES];
+    }
     [self finish];
-    return;
-  }
-  
-  [self setDuration:([NSDate timeIntervalSinceReferenceDate] - [self startTime])];
-   
-  // Even if filePath was set, the delegate might try to look at the data blob.
-  data = [[NSData alloc] initWithContentsOfMappedFile:[self inProgressFilePath]];
-  if ([[self delegate] respondsToSelector:[self successSelector]]) {
-    [[self delegate] performSelectorOnMainThread:[self successSelector] withObject:self waitUntilDone:YES];
-  }
-  [self finish];
+  });
 }
 
 - (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSHTTPURLResponse*)resp
