@@ -1,0 +1,379 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B62AC0C0145B9771005ABE92 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B62AC0BF145B9771005ABE92 /* UIKit.framework */; };
+		B62AC0C2145B9771005ABE92 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B62AC0C1145B9771005ABE92 /* Foundation.framework */; };
+		B62AC0C4145B9771005ABE92 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B62AC0C3145B9771005ABE92 /* CoreGraphics.framework */; };
+		B62AC0C6145B9771005ABE92 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B62AC0C5145B9771005ABE92 /* CoreData.framework */; };
+		B62AC0CE145B9771005ABE92 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B62AC0CD145B9771005ABE92 /* main.m */; };
+		B62AC0E7145B9842005ABE92 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B62AC0E2145B9842005ABE92 /* InfoPlist.strings */; };
+		B62AC0F5145B9861005ABE92 /* CGFURLDelegateOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = B62AC0F1145B9861005ABE92 /* CGFURLDelegateOperation.m */; };
+		B658C244146307F600A7AED3 /* CGFUsernameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B658C242146307F600A7AED3 /* CGFUsernameViewController.m */; };
+		B658C245146307F600A7AED3 /* CGFUsernameView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B658C243146307F600A7AED3 /* CGFUsernameView.xib */; };
+		B658C24B14630AB100A7AED3 /* FJImporter.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = B658C24914630AB100A7AED3 /* FJImporter.xcdatamodeld */; };
+		B658C24E14630B8800A7AED3 /* JustLogo.png in Resources */ = {isa = PBXBuildFile; fileRef = B658C24D14630B8800A7AED3 /* JustLogo.png */; };
+		B658C251146311D900A7AED3 /* CGFTimelineViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B658C250146311D900A7AED3 /* CGFTimelineViewController.m */; };
+		B6AEDED3145B98E300467F0B /* libYAJLiOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B6AEDEC9145B98E300467F0B /* libYAJLiOS.a */; };
+		B6AEDED6145B992A00467F0B /* CGFAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B6AEDED5145B992A00467F0B /* CGFAppDelegate.m */; };
+		B6BD9DDD14635EAA008D4011 /* ZDSStreamJSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = B6BD9DDC14635EAA008D4011 /* ZDSStreamJSONParser.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		B62AC0BB145B9771005ABE92 /* FJImporter.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FJImporter.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B62AC0BF145B9771005ABE92 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		B62AC0C1145B9771005ABE92 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		B62AC0C3145B9771005ABE92 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		B62AC0C5145B9771005ABE92 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		B62AC0CD145B9771005ABE92 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B62AC0E3145B9842005ABE92 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = InfoPlist.strings; sourceTree = "<group>"; };
+		B62AC0E9145B9854005ABE92 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B62AC0EA145B9854005ABE92 /* Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Prefix.pch; sourceTree = "<group>"; };
+		B62AC0F0145B9861005ABE92 /* CGFURLDelegateOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGFURLDelegateOperation.h; sourceTree = "<group>"; };
+		B62AC0F1145B9861005ABE92 /* CGFURLDelegateOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGFURLDelegateOperation.m; sourceTree = "<group>"; };
+		B658C241146307F600A7AED3 /* CGFUsernameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGFUsernameViewController.h; sourceTree = "<group>"; };
+		B658C242146307F600A7AED3 /* CGFUsernameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGFUsernameViewController.m; sourceTree = "<group>"; };
+		B658C243146307F600A7AED3 /* CGFUsernameView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CGFUsernameView.xib; sourceTree = "<group>"; };
+		B658C24A14630AB100A7AED3 /* FJImporter.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FJImporter.xcdatamodel; sourceTree = "<group>"; };
+		B658C24D14630B8800A7AED3 /* JustLogo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = JustLogo.png; sourceTree = "<group>"; };
+		B658C24F146311D900A7AED3 /* CGFTimelineViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGFTimelineViewController.h; sourceTree = "<group>"; };
+		B658C250146311D900A7AED3 /* CGFTimelineViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGFTimelineViewController.m; sourceTree = "<group>"; };
+		B6AEDEC9145B98E300467F0B /* libYAJLiOS.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libYAJLiOS.a; sourceTree = "<group>"; };
+		B6AEDECA145B98E300467F0B /* NSBundle+YAJL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSBundle+YAJL.h"; sourceTree = "<group>"; };
+		B6AEDECB145B98E300467F0B /* NSObject+YAJL.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+YAJL.h"; sourceTree = "<group>"; };
+		B6AEDECC145B98E300467F0B /* yajl_common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = yajl_common.h; sourceTree = "<group>"; };
+		B6AEDECD145B98E300467F0B /* yajl_gen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = yajl_gen.h; sourceTree = "<group>"; };
+		B6AEDECE145B98E300467F0B /* yajl_parse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = yajl_parse.h; sourceTree = "<group>"; };
+		B6AEDECF145B98E300467F0B /* YAJLDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YAJLDocument.h; sourceTree = "<group>"; };
+		B6AEDED0145B98E300467F0B /* YAJLGen.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YAJLGen.h; sourceTree = "<group>"; };
+		B6AEDED1145B98E300467F0B /* YAJLIOS.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YAJLIOS.h; sourceTree = "<group>"; };
+		B6AEDED2145B98E300467F0B /* YAJLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YAJLParser.h; sourceTree = "<group>"; };
+		B6AEDED4145B992A00467F0B /* CGFAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CGFAppDelegate.h; sourceTree = "<group>"; };
+		B6AEDED5145B992A00467F0B /* CGFAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CGFAppDelegate.m; sourceTree = "<group>"; };
+		B6BD9DDB14635EAA008D4011 /* ZDSStreamJSONParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ZDSStreamJSONParser.h; path = ../ZDSStreamJSONParser.h; sourceTree = "<group>"; };
+		B6BD9DDC14635EAA008D4011 /* ZDSStreamJSONParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ZDSStreamJSONParser.m; path = ../ZDSStreamJSONParser.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B62AC0B8145B9771005ABE92 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B62AC0C0145B9771005ABE92 /* UIKit.framework in Frameworks */,
+				B62AC0C2145B9771005ABE92 /* Foundation.framework in Frameworks */,
+				B62AC0C4145B9771005ABE92 /* CoreGraphics.framework in Frameworks */,
+				B62AC0C6145B9771005ABE92 /* CoreData.framework in Frameworks */,
+				B6AEDED3145B98E300467F0B /* libYAJLiOS.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B62AC0B0145B9771005ABE92 = {
+			isa = PBXGroup;
+			children = (
+				B6BD9DDA14635E93008D4011 /* Shared */,
+				B62AC0C7145B9771005ABE92 /* Classes */,
+				B62AC0E0145B9836005ABE92 /* Resources */,
+				B62AC0BE145B9771005ABE92 /* Frameworks */,
+				B62AC0BC145B9771005ABE92 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B62AC0BC145B9771005ABE92 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B62AC0BB145B9771005ABE92 /* FJImporter.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B62AC0BE145B9771005ABE92 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				B62AC0BF145B9771005ABE92 /* UIKit.framework */,
+				B62AC0C1145B9771005ABE92 /* Foundation.framework */,
+				B62AC0C3145B9771005ABE92 /* CoreGraphics.framework */,
+				B62AC0C5145B9771005ABE92 /* CoreData.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B62AC0C7145B9771005ABE92 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				B6AEDED4145B992A00467F0B /* CGFAppDelegate.h */,
+				B6AEDED5145B992A00467F0B /* CGFAppDelegate.m */,
+				B62AC0F0145B9861005ABE92 /* CGFURLDelegateOperation.h */,
+				B62AC0F1145B9861005ABE92 /* CGFURLDelegateOperation.m */,
+				B62AC0CD145B9771005ABE92 /* main.m */,
+				B658C241146307F600A7AED3 /* CGFUsernameViewController.h */,
+				B658C242146307F600A7AED3 /* CGFUsernameViewController.m */,
+				B658C243146307F600A7AED3 /* CGFUsernameView.xib */,
+				B658C24F146311D900A7AED3 /* CGFTimelineViewController.h */,
+				B658C250146311D900A7AED3 /* CGFTimelineViewController.m */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+		B62AC0E0145B9836005ABE92 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B658C24C14630B8800A7AED3 /* Images */,
+				B658C24914630AB100A7AED3 /* FJImporter.xcdatamodeld */,
+				B6AEDEC8145B98E300467F0B /* YAJL-1.0.9 */,
+				B62AC0E9145B9854005ABE92 /* Info.plist */,
+				B62AC0EA145B9854005ABE92 /* Prefix.pch */,
+				B62AC0E1145B9842005ABE92 /* en.lproj */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		B62AC0E1145B9842005ABE92 /* en.lproj */ = {
+			isa = PBXGroup;
+			children = (
+				B62AC0E2145B9842005ABE92 /* InfoPlist.strings */,
+			);
+			path = en.lproj;
+			sourceTree = "<group>";
+		};
+		B658C24C14630B8800A7AED3 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				B658C24D14630B8800A7AED3 /* JustLogo.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		B6AEDEC8145B98E300467F0B /* YAJL-1.0.9 */ = {
+			isa = PBXGroup;
+			children = (
+				B6AEDEC9145B98E300467F0B /* libYAJLiOS.a */,
+				B6AEDECA145B98E300467F0B /* NSBundle+YAJL.h */,
+				B6AEDECB145B98E300467F0B /* NSObject+YAJL.h */,
+				B6AEDECC145B98E300467F0B /* yajl_common.h */,
+				B6AEDECD145B98E300467F0B /* yajl_gen.h */,
+				B6AEDECE145B98E300467F0B /* yajl_parse.h */,
+				B6AEDECF145B98E300467F0B /* YAJLDocument.h */,
+				B6AEDED0145B98E300467F0B /* YAJLGen.h */,
+				B6AEDED1145B98E300467F0B /* YAJLIOS.h */,
+				B6AEDED2145B98E300467F0B /* YAJLParser.h */,
+			);
+			path = "YAJL-1.0.9";
+			sourceTree = "<group>";
+		};
+		B6BD9DDA14635E93008D4011 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				B6BD9DDB14635EAA008D4011 /* ZDSStreamJSONParser.h */,
+				B6BD9DDC14635EAA008D4011 /* ZDSStreamJSONParser.m */,
+			);
+			name = Shared;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B62AC0BA145B9771005ABE92 /* FJImporter */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B62AC0D8145B9771005ABE92 /* Build configuration list for PBXNativeTarget "FJImporter" */;
+			buildPhases = (
+				B62AC0B7145B9771005ABE92 /* Sources */,
+				B62AC0B8145B9771005ABE92 /* Frameworks */,
+				B62AC0B9145B9771005ABE92 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FJImporter;
+			productName = FJImporter;
+			productReference = B62AC0BB145B9771005ABE92 /* FJImporter.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B62AC0B2145B9771005ABE92 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+				ORGANIZATIONNAME = "Cocoa Is My Girlfriend";
+			};
+			buildConfigurationList = B62AC0B5145B9771005ABE92 /* Build configuration list for PBXProject "FJImporter" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B62AC0B0145B9771005ABE92;
+			productRefGroup = B62AC0BC145B9771005ABE92 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B62AC0BA145B9771005ABE92 /* FJImporter */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B62AC0B9145B9771005ABE92 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B62AC0E7145B9842005ABE92 /* InfoPlist.strings in Resources */,
+				B658C245146307F600A7AED3 /* CGFUsernameView.xib in Resources */,
+				B658C24E14630B8800A7AED3 /* JustLogo.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B62AC0B7145B9771005ABE92 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B62AC0CE145B9771005ABE92 /* main.m in Sources */,
+				B62AC0F5145B9861005ABE92 /* CGFURLDelegateOperation.m in Sources */,
+				B6AEDED6145B992A00467F0B /* CGFAppDelegate.m in Sources */,
+				B658C244146307F600A7AED3 /* CGFUsernameViewController.m in Sources */,
+				B658C24B14630AB100A7AED3 /* FJImporter.xcdatamodeld in Sources */,
+				B658C251146311D900A7AED3 /* CGFTimelineViewController.m in Sources */,
+				B6BD9DDD14635EAA008D4011 /* ZDSStreamJSONParser.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		B62AC0E2145B9842005ABE92 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B62AC0E3145B9842005ABE92 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B62AC0D6145B9771005ABE92 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		B62AC0D7145B9771005ABE92 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B62AC0D9145B9771005ABE92 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/YAJL-1.0.9\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		B62AC0DA145B9771005ABE92 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Prefix.pch;
+				INFOPLIST_FILE = Info.plist;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/YAJL-1.0.9\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B62AC0B5145B9771005ABE92 /* Build configuration list for PBXProject "FJImporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B62AC0D6145B9771005ABE92 /* Debug */,
+				B62AC0D7145B9771005ABE92 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B62AC0D8145B9771005ABE92 /* Build configuration list for PBXNativeTarget "FJImporter" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B62AC0D9145B9771005ABE92 /* Debug */,
+				B62AC0DA145B9771005ABE92 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		B658C24914630AB100A7AED3 /* FJImporter.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				B658C24A14630AB100A7AED3 /* FJImporter.xcdatamodel */,
+			);
+			currentVersion = B658C24A14630AB100A7AED3 /* FJImporter.xcdatamodel */;
+			name = FJImporter.xcdatamodeld;
+			path = Models/FJImporter.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
+	};
+	rootObject = B62AC0B2145B9771005ABE92 /* Project object */;
+}
