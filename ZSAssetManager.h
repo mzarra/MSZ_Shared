@@ -35,10 +35,15 @@
 
 @class ZSURLConnectionDelegate;
 
+typedef void (^ZDSImageDeliveryBlock)(NSURL *url, UIImage *image);
+
 @interface ZSAssetManager : NSObject
 
 @property (nonatomic, assign, getter=allowBackgroundCaching) BOOL backgroundCaching;
 
++ (ZSAssetManager*)sharedAssetManager;
+
+- (void)fetchImageForURL:(NSURL*)url withCompletionBlock:(ZDSImageDeliveryBlock)completion;
 - (UIImage*)imageForURL:(NSURL*)url;
 - (NSURL*)localURLForAssetURL:(NSURL*)url;
 

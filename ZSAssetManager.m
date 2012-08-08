@@ -67,6 +67,7 @@ typedef enum {
 @property (nonatomic, assign) NSInteger numberOfItemsDownloaded;
 
 @property (nonatomic, retain) NSMutableArray *pendingCacheItems;
+@property (nonatomic, retain) NSMutableDictionary *completionBlocks;
 
 @end
 
@@ -78,6 +79,19 @@ typedef enum {
 @synthesize cachePopulationIdentifier;
 @synthesize currentNetworkState;
 @synthesize numberOfItemsDownloaded;
+@synthesize completionBlocks;
+
++ (ZSAssetManager*)sharedAssetManager
+{
+  static dispatch_once_t onceToken;
+  static ZSAssetManager *sharedInstance = nil;
+  
+  dispatch_once(&onceToken, ^{
+    sharedInstance = [[ZSAssetManager alloc] init];
+  });
+  
+  return sharedInstance;
+}
 
 - (id)init
 {
@@ -90,6 +104,7 @@ typedef enum {
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enteringBackground:) name:UIApplicationDidEnterBackgroundNotification object:[UIApplication sharedApplication]];
   
   [self performSelector:@selector(loadPersistentCacheLists) withObject:nil afterDelay:1.0];
+  [self setCompletionBlocks:[NSMutableDictionary dictionary]];
   
   return self;
 }
@@ -227,7 +242,6 @@ typedef enum {
     DLog(@"reinstating cache list ------------------------------------------ %i", [cacheItems count]);
     
     [self queueAssetsForRetrievalFromURLSet:assetSet];
-    MCRelease(assetSet);
   }
 }
 
@@ -242,7 +256,6 @@ typedef enum {
   }
   
   ZAssert([array writeToFile:filePath atomically:NO], @"Failed to write cache list to disk");
-  MCRelease(array);
 }
 
 - (void)calculateBandwidthForDelegate:(ZSURLConnectionDelegate*)delegate
@@ -309,7 +322,7 @@ typedef enum {
 
 - (void)cacheOperationFailed:(ZSURLConnectionDelegate*)delegate
 {
-  if (VERBOSE) DLog(@"%@:%s request failed", [self class], _cmd);
+  if (VERBOSE) DLog(@"request failed");
 }
 
 #pragma mark -
@@ -363,8 +376,6 @@ typedef enum {
   [delegate setQueuePriority:NSOperationQueuePriorityNormal];
   
   [[self assetQueue] addOperation:delegate];
-  
-  MCRelease(delegate);
 }
 
 #pragma mark -
@@ -376,8 +387,21 @@ typedef enum {
     if (VERBOSE) DLog(@"%s zero-length image received; ignoring", __PRETTY_FUNCTION__);
     return;
   }
+  NSURL *url = [delegate myURL];
+  UIImage *image = [self imageForURL:url];
+
+  // Fire off any completion blocks we may have.
+  if ([[self completionBlocks] objectForKey:url]) {
+    NSMutableArray *blocks = [[self completionBlocks] objectForKey:url];
+    for (ZDSImageDeliveryBlock completionBlock in blocks) {
+      completionBlock(url, image);
+    }
+    
+    // We don't need you any more. </golum>
+    [[self completionBlocks] removeObjectForKey:url];
+  }
   
-  NSNotification *notification = [NSNotification notificationWithName:kImageDownloadComplete object:[delegate myURL] userInfo:nil];
+  NSNotification *notification = [NSNotification notificationWithName:kImageDownloadComplete object:url userInfo:nil];
   
   [[NSNotificationQueue defaultQueue] enqueueNotification:notification postingStyle:NSPostWhenIdle coalesceMask:NSNotificationCoalescingOnSender forModes:nil];
 
@@ -386,7 +410,7 @@ typedef enum {
 
 - (void)requestFailedForDelegate:(ZSURLConnectionDelegate*)delegate
 {
-  if (VERBOSE) DLog(@"%@:%s request failed", [self class], _cmd);
+  if (VERBOSE) DLog(@"request failed");
   if (!delegate) return;
 }
 
@@ -419,7 +443,6 @@ typedef enum {
   [cacheOperation setThreadPriority:0.0f];
   
   [[self assetQueue] addOperation:cacheOperation];
-  MCRelease(cacheOperation);
 }
 
 - (void)queueAssetsForRetrievalFromURLSet:(NSSet*)urlSet
@@ -471,6 +494,20 @@ typedef enum {
   return nil;
 }
 
+- (void)fetchImageForURL:(NSURL*)url withCompletionBlock:(ZDSImageDeliveryBlock)completion
+{
+  UIImage *image = [self imageForURL:url];
+  
+  if (image) {
+    completion(url, image);
+  }
+  else {
+    NSMutableArray *array = [NSMutableArray arrayWithArray:[[self completionBlocks] objectForKey:url]];
+    [array addObject:[completion copy]];
+    [[self completionBlocks] setObject:array forKey:url];
+  }
+}
+
 - (UIImage*)imageForURL:(NSURL*)url
 {
   ZAssert(url, @"nil URL passed again");
@@ -506,7 +543,7 @@ typedef enum {
   NSFileManager *fileManager = [NSFileManager defaultManager];
   
   NSError *error = nil;
-  NSString *tempCachePath = [NSString stringWithFormat:@"%@%u", [self cachePath], [NSDate timeIntervalSinceReferenceDate]];
+  NSString *tempCachePath = [NSString stringWithFormat:@"%@ %.2f", [self cachePath], [NSDate timeIntervalSinceReferenceDate]];
   ZAssert([fileManager moveItemAtPath:[self cachePath] toPath:tempCachePath error:&error], @"Move failed");
   DLog(@"move directory: %.2f", ([NSDate timeIntervalSinceReferenceDate] - start));
   dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0);
