@@ -8,14 +8,29 @@
 
 #import "UIImageView+ZSAssetManagerAdditions.h"
 #import "ZSAssetManager.h"
+#import <objc/runtime.h>
+
+static char const * const assetManagerImageURLKey = "assetManagerImageURLKey";
 
 @implementation UIImageView (ZSAssetManagerAdditions)
 
 - (void)setImageWithURL:(NSURL *)url
 {
+  if (!url) {
+    DLog(@"nil url passed");
+    objc_removeAssociatedObjects(self);
+    return;
+  }
+  
+  objc_setAssociatedObject(self, assetManagerImageURLKey, url, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+
+  __weak UIImageView *blockSelf = self;
   [[ZSAssetManager sharedAssetManager] fetchImageForURL:url withCompletionBlock:^(NSURL *fetchedUrl, UIImage *image) {
-    if ([url isEqual:fetchedUrl]) {
-      self.image = image;
+
+    NSURL *currentURL = (NSURL*) objc_getAssociatedObject(self, assetManagerImageURLKey);
+
+    if ([currentURL isEqual:fetchedUrl]) {
+      blockSelf.image = image;
     }
   }];
 }
