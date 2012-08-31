@@ -16,14 +16,14 @@ static char const * const assetManagerImageURLKey = "assetManagerImageURLKey";
 
 - (void)setImageWithURL:(NSURL *)url
 {
+  objc_setAssociatedObject(self, assetManagerImageURLKey, url, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  self.image = nil;
+  
   if (!url) {
     DLog(@"nil url passed");
-    objc_removeAssociatedObjects(self);
     return;
   }
   
-  objc_setAssociatedObject(self, assetManagerImageURLKey, url, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-
   __weak UIImageView *blockSelf = self;
   [[ZSAssetManager sharedAssetManager] fetchImageForURL:url withCompletionBlock:^(NSURL *fetchedUrl, UIImage *image) {
 
@@ -37,8 +37,13 @@ static char const * const assetManagerImageURLKey = "assetManagerImageURLKey";
 
 - (void)setImageWithURL:(NSURL *)url placeholderImage:(UIImage *)placeholderImage
 {
-  self.image = placeholderImage;
+  // Request the image from the asset manager.
   [self setImageWithURL:url];
+  
+  // If the asset manager has it, don't set the placeholder.
+  if (!self.image) {
+    self.image = placeholderImage;
+  }
 }
 
 @end
