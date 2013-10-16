@@ -92,7 +92,7 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 	
 	ZSReachability* noteObject = (ZSReachability*) info;
 	// Post a notification to notify the client that the network reachability changed.
-	[[NSNotificationCenter defaultCenter] postNotificationName: kReachabilityChangedNotification object: noteObject];
+	[[NSNotificationCenter defaultCenter] postNotificationName: kZSReachabilityChangedNotification object: noteObject];
 	
 	[myPool release];
 }

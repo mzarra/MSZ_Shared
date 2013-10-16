@@ -26,12 +26,20 @@
 
 #import "ZSContextWatcher.h"
 
+@interface ZSContextWatcher ()
+
+@property (nonatomic, strong) NSManagedObjectContext *context;
+
+@end
+
 @implementation ZSContextWatcher
 
 - (id)initWithManagedObjectContext:(NSManagedObjectContext*)context;
 {
   ZAssert(context, @"Context is nil!");
   [super init];
+    
+  self.context = context;
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contextUpdated:) name:NSManagedObjectContextDidSaveNotification object:nil];
   
@@ -68,7 +76,7 @@
 {
   NSManagedObjectContext *incomingContext = [notification object];
   NSPersistentStoreCoordinator *incomingCoordinator = [incomingContext persistentStoreCoordinator];
-  if (incomingCoordinator != [self persistentStoreCoordinator]) {
+  if (incomingContext != self.context) {
     return;
   }
   if ([self reference]) {
@@ -101,7 +109,7 @@
     if ([self reference]) {
       DLog(@"%@++++++++++firing action", [self reference]);
     }
-    [[self delegate] performSelectorOnMainThread:[self action] withObject:self waitUntilDone:YES];
+    [[self delegate] performSelectorOnMainThread:[self action] withObject:results waitUntilDone:YES];
   } else {
     if ([self reference]) {
       DLog(@"%@----------delegate doesn't respond", [self reference]);
