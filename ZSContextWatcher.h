@@ -26,7 +26,6 @@
 
 @interface ZSContextWatcher : NSObject 
 {
-  NSPersistentStoreCoordinator *persistentStoreCoordinator;
   NSPredicate *masterPredicate;
   NSString *reference;
   
