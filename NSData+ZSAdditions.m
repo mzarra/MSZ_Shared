@@ -32,6 +32,7 @@
 
 #import "NSData+ZSAdditions.h"
 #import <CommonCrypto/CommonDigest.h>
+#import "ZSShared.h"
 
 @implementation NSData (ZSAdditions)
 

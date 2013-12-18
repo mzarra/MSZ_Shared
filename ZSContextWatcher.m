@@ -25,6 +25,7 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 
 #import "ZSContextWatcher.h"
+#import "ZSShared.h"
 
 @interface ZSContextWatcher ()
 

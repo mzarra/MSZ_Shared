@@ -51,10 +51,9 @@
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #import <netdb.h>
-
 #import <CoreFoundation/CoreFoundation.h>
-
 #import "ZSReachability.h"
+#import "ZSShared.h"
 
 #define kShouldPrintReachabilityFlags 1
 

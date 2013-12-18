@@ -34,8 +34,8 @@
 #import "ZSAssetManager.h"
 #import "ZSURLConnectionDelegate.h"
 #import "ZSReachability.h"
-
 #import "NSString+ZSAdditions.h"
+#import "ZSShared.h"
 
 #define kCachePath @"imageCache"
 

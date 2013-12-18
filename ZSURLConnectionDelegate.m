@@ -32,9 +32,9 @@
  */
 
 #import "ZSURLConnectionDelegate.h"
-
 #import <ImageIO/ImageIO.h>
 #import <MobileCoreServices/MobileCoreServices.h>
+#import "ZSShared.h"
 
 static NSInteger activityCount;
 

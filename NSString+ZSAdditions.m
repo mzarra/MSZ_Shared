@@ -32,6 +32,7 @@
 
 #import "NSString+ZSAdditions.h"
 #import "NSData+ZSAdditions.h"
+#import "ZSShared.h"
 
 @implementation NSString(ZSAdditions)
 
