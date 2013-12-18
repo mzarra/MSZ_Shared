@@ -36,7 +36,7 @@
 
 @implementation ZSContextWatcher
 
-- (id)initWithManagedObjectContext:(NSManagedObjectContext*)contextToWatch;
+- (id)initWithManagedObjectContextToWatch:(NSManagedObjectContext*)contextToWatch
 {
   ZAssert(contextToWatch, @"Context is nil!");
   [super init];
@@ -48,7 +48,7 @@
   return self;
 }
 
-- (id)initWithPersistentStoreCoordinator:(NSPersistentStoreCoordinator*)persistentStoreCoordinatorToWatch;
+- (id)initWithPersistentStoreCoordinatorToWatch:(NSPersistentStoreCoordinator*)persistentStoreCoordinatorToWatch
 {
   ZAssert(persistentStoreCoordinatorToWatch, @"Persistent Store Coordinator is nil!");
   [super init];

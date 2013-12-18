@@ -40,7 +40,8 @@
 @property (nonatomic, retain) NSPredicate *masterPredicate;
 @property (nonatomic, retain) NSString *reference;
 
-- (id)initWithManagedObjectContext:(NSManagedObjectContext*)context;
+- (id)initWithManagedObjectContextToWatch:(NSManagedObjectContext*)contextToWatch;
+- (id)initWithPersistentStoreCoordinatorToWatch:(NSPersistentStoreCoordinator*)persistentStoreCoordinatorToWatch;
 
 - (void)addEntityToWatch:(NSEntityDescription*)description withPredicate:(NSPredicate*)predicate;
 
