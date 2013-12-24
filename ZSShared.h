@@ -6,6 +6,10 @@
 //  Copyright (c) 2013 Internet Broadcasting. All rights reserved.
 //
 
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
+
 #ifdef DEBUG
 #define MCRelease(x) [x release]
 #define DLog(...) NSLog(@"%s(%p) %@", __PRETTY_FUNCTION__, self, [NSString stringWithFormat:__VA_ARGS__])
