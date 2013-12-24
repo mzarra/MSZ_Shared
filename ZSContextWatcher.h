@@ -24,7 +24,9 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 //  OTHER DEALINGS IN THE SOFTWARE.
 
-@interface ZSContextWatcher : NSObject 
+#import <CoreData/CoreData.h>
+
+@interface ZSContextWatcher : NSObject
 {
   NSPredicate *masterPredicate;
   NSString *reference;
