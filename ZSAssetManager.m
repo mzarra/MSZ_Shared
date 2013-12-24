@@ -34,8 +34,8 @@
 #import "ZSAssetManager.h"
 #import "ZSURLConnectionDelegate.h"
 #import "ZSReachability.h"
-
 #import "NSString+ZSAdditions.h"
+#import "ZSShared.h"
 
 #define kCachePath @"imageCache"
 
@@ -98,7 +98,7 @@ typedef enum {
   self = [super init];
   
   // TODO: Is there a way to avoid object:nil?
-  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kReachabilityChangedNotification object:nil];
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reachabilityChanged:) name:kZSReachabilityChangedNotification object:nil];
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(flushMemoryCaches:) name:UIApplicationDidReceiveMemoryWarningNotification object:[UIApplication sharedApplication]];
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enteringBackground:) name:UIApplicationDidEnterBackgroundNotification object:[UIApplication sharedApplication]];

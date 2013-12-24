@@ -26,6 +26,7 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 
 #import "ZDSStreamJSONParser.h"
+#import "ZSShared.h"
 
 @implementation ZDSStreamJSONParser
 

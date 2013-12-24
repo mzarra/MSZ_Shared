@@ -25,18 +25,38 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 
 #import "ZSContextWatcher.h"
+#import "ZSShared.h"
+
+@interface ZSContextWatcher ()
+
+@property (nonatomic, strong) NSManagedObjectContext *contextToWatch;
+@property (nonatomic, strong) NSPersistentStoreCoordinator *persistentStoreCoordinatorToWatch;
+
+@end
 
 @implementation ZSContextWatcher
 
-- (id)initWithManagedObjectContext:(NSManagedObjectContext*)context;
+- (id)initWithManagedObjectContextToWatch:(NSManagedObjectContext*)contextToWatch
 {
-  ZAssert(context, @"Context is nil!");
+  ZAssert(contextToWatch, @"Context is nil!");
   [super init];
+    
+  self.contextToWatch = contextToWatch;
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contextUpdated:) name:NSManagedObjectContextDidSaveNotification object:nil];
   
-  persistentStoreCoordinator = [context persistentStoreCoordinator];
-  
+  return self;
+}
+
+- (id)initWithPersistentStoreCoordinatorToWatch:(NSPersistentStoreCoordinator*)persistentStoreCoordinatorToWatch
+{
+  ZAssert(persistentStoreCoordinatorToWatch, @"Persistent Store Coordinator is nil!");
+  [super init];
+    
+  self.persistentStoreCoordinatorToWatch = persistentStoreCoordinatorToWatch;
+    
+  [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contextUpdated:) name:NSManagedObjectContextDidSaveNotification object:nil];
+    
   return self;
 }
 
@@ -44,7 +64,14 @@
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   delegate = nil;
-  [masterPredicate release], masterPredicate = nil;
+  [masterPredicate release];
+  masterPredicate = nil;
+  [reference release];
+  reference = nil;
+  [_contextToWatch release];
+  _contextToWatch = nil;
+  [_persistentStoreCoordinatorToWatch release];
+  _persistentStoreCoordinatorToWatch = nil;
   [super dealloc];
 }
 
@@ -68,8 +95,15 @@
 {
   NSManagedObjectContext *incomingContext = [notification object];
   NSPersistentStoreCoordinator *incomingCoordinator = [incomingContext persistentStoreCoordinator];
-  if (incomingCoordinator != [self persistentStoreCoordinator]) {
-    return;
+  if (self.contextToWatch != nil) {
+    if (incomingContext != self.contextToWatch) {
+        return;
+    }
+  }
+  else if (self.persistentStoreCoordinatorToWatch != nil) {
+    if  (incomingCoordinator != self.persistentStoreCoordinatorToWatch) {
+      return;
+    }
   }
   if ([self reference]) {
     DLog(@"%@ entered", [self reference]);
@@ -101,7 +135,7 @@
     if ([self reference]) {
       DLog(@"%@++++++++++firing action", [self reference]);
     }
-    [[self delegate] performSelectorOnMainThread:[self action] withObject:self waitUntilDone:YES];
+    [[self delegate] performSelectorOnMainThread:[self action] withObject:results waitUntilDone:YES];
   } else {
     if ([self reference]) {
       DLog(@"%@----------delegate doesn't respond", [self reference]);
@@ -113,7 +147,6 @@
   [updated release], updated = nil;
 }
 
-@synthesize persistentStoreCoordinator;
 @synthesize delegate;
 @synthesize action;
 @synthesize masterPredicate;

@@ -26,6 +26,7 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 
 #import "YAJLParser.h"
+#import <CoreData/CoreData.h>
 
 @interface ZDSStreamJSONParser : NSObject <YAJLParserDelegate>
 

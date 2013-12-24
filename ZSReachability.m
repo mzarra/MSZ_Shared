@@ -51,10 +51,9 @@
 #import <arpa/inet.h>
 #import <ifaddrs.h>
 #import <netdb.h>
-
 #import <CoreFoundation/CoreFoundation.h>
-
 #import "ZSReachability.h"
+#import "ZSShared.h"
 
 #define kShouldPrintReachabilityFlags 1
 
@@ -92,7 +91,7 @@ static void ReachabilityCallback(SCNetworkReachabilityRef target, SCNetworkReach
 	
 	ZSReachability* noteObject = (ZSReachability*) info;
 	// Post a notification to notify the client that the network reachability changed.
-	[[NSNotificationCenter defaultCenter] postNotificationName: kReachabilityChangedNotification object: noteObject];
+	[[NSNotificationCenter defaultCenter] postNotificationName: kZSReachabilityChangedNotification object: noteObject];
 	
 	[myPool release];
 }

@@ -9,6 +9,7 @@
 #import "UIImageView+ZSAssetManagerAdditions.h"
 #import "ZSAssetManager.h"
 #import <objc/runtime.h>
+#import "ZSShared.h"
 
 static char const * const assetManagerImageURLKey = "assetManagerImageURLKey";
 
