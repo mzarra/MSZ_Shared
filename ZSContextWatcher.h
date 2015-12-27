@@ -25,14 +25,6 @@
 //  OTHER DEALINGS IN THE SOFTWARE.
 
 @interface ZSContextWatcher : NSObject 
-{
-  NSPersistentStoreCoordinator *persistentStoreCoordinator;
-  NSPredicate *masterPredicate;
-  NSString *reference;
-  
-  __weak id delegate;
-  SEL action;
-}
 
 @property (nonatomic, assign) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (nonatomic, assign) id delegate;

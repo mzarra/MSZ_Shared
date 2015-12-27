@@ -30,7 +30,7 @@
 
 - (id)initWithManagedObjectContext:(NSManagedObjectContext*)context;
 {
-  ZAssert(context, @"Context is nil!");
+  NSAssert(context, @"Context is nil!");
   [super init];
   
   [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(contextUpdated:) name:NSManagedObjectContextDidSaveNotification object:nil];
@@ -43,9 +43,6 @@
 - (void) dealloc
 {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
-  delegate = nil;
-  [masterPredicate release], masterPredicate = nil;
-  [super dealloc];
 }
 
 - (void)addEntityToWatch:(NSEntityDescription*)description withPredicate:(NSPredicate*)predicate;
@@ -60,7 +57,6 @@
 
   NSArray *array = [[NSArray alloc] initWithObjects:[self masterPredicate], finalPredicate, nil];
   finalPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:array];
-  [array release], array = nil;
   [self setMasterPredicate:finalPredicate];
 }
 
@@ -72,7 +68,7 @@
     return;
   }
   if ([self reference]) {
-    DLog(@"%@ entered", [self reference]);
+    NSLog(@"%@ entered", [self reference]);
   }
   NSMutableSet *inserted = [[[notification userInfo] objectForKey:NSInsertedObjectsKey] mutableCopy];
   if ([self masterPredicate]) [inserted filterUsingPredicate:[self masterPredicate]];
@@ -83,12 +79,6 @@
   
   NSInteger totalCount = [inserted count] + [deleted count]  + [updated count];
   if (totalCount == 0) {
-    [inserted release], inserted = nil;
-    [deleted release], deleted = nil;
-    [updated release], updated = nil;
-    if ([self reference]) {
-      DLog(@"%@----------fail on count", [self reference]);
-    }
     return;
   }
   
@@ -99,24 +89,14 @@
   
   if ([[self delegate] respondsToSelector:[self action]]) {
     if ([self reference]) {
-      DLog(@"%@++++++++++firing action", [self reference]);
+      NSLog(@"%@++++++++++firing action", [self reference]);
     }
     [[self delegate] performSelectorOnMainThread:[self action] withObject:self waitUntilDone:YES];
   } else {
     if ([self reference]) {
-      DLog(@"%@----------delegate doesn't respond", [self reference]);
+      NSLog(@"%@----------delegate doesn't respond", [self reference]);
     }
   }
-  [results release], results = nil;
-  [inserted release], inserted = nil;
-  [deleted release], deleted = nil;
-  [updated release], updated = nil;
 }
-
-@synthesize persistentStoreCoordinator;
-@synthesize delegate;
-@synthesize action;
-@synthesize masterPredicate;
-@synthesize reference;
 
 @end
