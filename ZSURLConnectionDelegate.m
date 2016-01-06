@@ -61,6 +61,14 @@ void decrementNetworkActivity(id sender)
   }
 }
 
+@interface ZSURLConnectionDelegate ()
+@property (readwrite, retain) NSString *inProgressFilePath;
+@property (readwrite, retain) NSFileHandle *inProgressFileHandle;
+@property (readwrite) NSInteger HTTPStatus;
+@property (readwrite, retain) NSURLRequest *request;
+@property (readwrite, assign) dispatch_group_t dispatchFileWriteGroup;
+@end
+
 @implementation ZSURLConnectionDelegate
 
 @synthesize verbose;
@@ -72,6 +80,9 @@ void decrementNetworkActivity(id sender)
 @synthesize filePath;
 @synthesize myURL;
 @synthesize response;
+@synthesize HTTPStatus;
+@synthesize request;
+@synthesize dispatchFileWriteGroup;
 
 @synthesize successSelector;
 @synthesize failureSelector;
@@ -81,17 +92,27 @@ void decrementNetworkActivity(id sender)
 @synthesize startTime;
 @synthesize duration;
 
+@synthesize inProgressFilePath;
+@synthesize inProgressFileHandle;
+
+@synthesize acceptSelfSignedCertificates;
+@synthesize acceptSelfSignedCertificatesFromHosts;
+
+@synthesize userInfo;
+
 static dispatch_queue_t writeQueue;
 static dispatch_queue_t pngQueue;
 
-- (id)initWithURL:(NSURL*)aURL delegate:(id)aDelegate;
+#pragma mark -
+#pragma mark Initializers
+- (id)initWithRequest:(NSURLRequest *)newRequest delegate:(id)aDelegate;
 {
-  ZAssert(aURL, @"incoming url is nil");
   if (!(self = [super init])) return nil;
   
+  request = [newRequest retain];
   delegate = [aDelegate retain];
-  [self setMyURL:aURL];
-  
+  [self setMyURL:[newRequest URL]];
+
   if (writeQueue == NULL) {
     writeQueue = dispatch_queue_create("cache write queue", NULL);
   }
@@ -100,32 +121,88 @@ static dispatch_queue_t pngQueue;
     pngQueue = dispatch_queue_create("png generation queue", NULL);
   }
   
+  if (dispatchFileWriteGroup == NULL) {
+    dispatchFileWriteGroup = dispatch_group_create();
+  }
+  
   return self;
 }
 
+- (id)initWithURL:(NSURL*)aURL delegate:(id)aDelegate;
+{
+  ZAssert(aURL, @"incoming url is nil");
+  return [self initWithRequest:[NSURLRequest requestWithURL:aURL] delegate:aDelegate];
+}
+
+#pragma mark -
+#pragma mark Convenience factory methods
++ (id)operationWithRequest:(NSURLRequest *)newRequest delegate:(id)aDelegate
+{
+  return [[[ZSURLConnectionDelegate alloc] initWithRequest:newRequest delegate:aDelegate] autorelease];
+}
+
++ (id)operationWithURL:(NSURL *)aURL delegate:(id)aDelegate
+{
+  return [[[ZSURLConnectionDelegate alloc] initWithURL:aURL delegate:aDelegate] autorelease];
+}
+
+#pragma mark -
+#pragma mark Memory management
 - (void)dealloc
 {
   if ([self isVerbose]) DLog(@"fired");
   connection = nil;
   object = nil;
   
+  if (![self filePath]) {
+    // If no filePath was set, don't litter the temp dir with orphaned downloaded files.
+    [[NSFileManager defaultManager] removeItemAtPath:[self inProgressFilePath] error:nil];
+  }
   MCRelease(delegate);
   MCRelease(filePath);
   MCRelease(myURL);
   MCRelease(data);
+  MCRelease(request);
   MCRelease(response);
+  MCRelease(userInfo);
 
+  dispatch_release([self dispatchFileWriteGroup]);
+
+  MCRelease(inProgressFilePath);
+  MCRelease(inProgressFileHandle);
+  
   [super dealloc];
 }
 
+#pragma mark -
+#pragma mark Accessors
+- (void)setAcceptSelfSignedCertificates:(BOOL)flag
+{
+  acceptSelfSignedCertificates = flag;
+  if (flag) {
+    // Setting the flag to YES implies trusting self-signed certs from everyone.
+    [acceptSelfSignedCertificatesFromHosts release];
+    acceptSelfSignedCertificatesFromHosts = nil;
+  }
+}
+
+- (void)setAcceptSelfSignedCertificatesFromHosts:(NSArray *)hosts
+{
+  [acceptSelfSignedCertificatesFromHosts release];
+  acceptSelfSignedCertificatesFromHosts = [hosts copy];
+  // Set the flag to NO to turn off accept-from-all behavior, limiting access to only the host list.
+  [self setAcceptSelfSignedCertificates:NO];
+}
+
+#pragma mark -
+#pragma mark Entry point
 - (void)main
 {
   if ([self isCancelled]) return;
   
   incrementNetworkActivity(self);
-  NSURLRequest *request = [NSURLRequest requestWithURL:[self myURL]];
   
-  [self setConnection:[NSURLConnection connectionWithRequest:request delegate:self]];
+  [self setConnection:[NSURLConnection connectionWithRequest:[self request] delegate:self]];
   
   CFRunLoopRun();
   
@@ -137,40 +214,30 @@ static dispatch_queue_t pngQueue;
   CFRunLoopStop(CFRunLoopGetCurrent());
 }
 
+#pragma mark -
+#pragma mark NSURLConnection delegate methods
 - (void)connectionDidFinishLoading:(NSURLConnection*)connection
 {
-  DLog(@"finished for %@", [self myURL]);
-  if ([self isCancelled]) {
-    [[self connection] cancel];
-    [self finish];
-    return;
-  }
-  
-  [self setDuration:([NSDate timeIntervalSinceReferenceDate] - [self startTime])];
-   
-  if (![self filePath]) {
+  // Hold the completion block until all outstanding file writes have finished, as indicated by dispatchFileWriteGroup.
+  dispatch_group_notify([self dispatchFileWriteGroup], writeQueue, ^{
+    [[self inProgressFileHandle] closeFile];
+    
+    DLog(@"finished for %@", [self myURL]);
+    if ([self isCancelled]) {
+      [[self connection] cancel];
+      [self finish];
+      return;
+    }
+    
+    [self setDuration:([NSDate timeIntervalSinceReferenceDate] - [self startTime])];
+    
+    // Even if filePath was set, the delegate might try to look at the data blob.
+    data = [[NSData alloc] initWithContentsOfMappedFile:[self inProgressFilePath]];
     if ([[self delegate] respondsToSelector:[self successSelector]]) {
       [[self delegate] performSelectorOnMainThread:[self successSelector] withObject:self waitUntilDone:YES];
     }
     [self finish];
-    return;
-  }
-  
-  NSData *localizedData = [self data];
-  NSString *localizedFilepath = [self filePath];
-  
-  dispatch_sync(writeQueue, ^{
-    NSError *error = nil;
-    ZAssert([localizedData writeToFile:localizedFilepath atomically:NO], @"Failed to write to %@\n%@\n%@", localizedFilepath, [error localizedDescription], [error userInfo]);
-    
-    if (![[self delegate] respondsToSelector:[self successSelector]]) return;
-    
-    dispatch_sync(dispatch_get_main_queue(), ^{
-      [[self delegate] performSelector:[self successSelector] withObject:self];
-    });
   });
-  
-  [self finish];
 }
 
 - (void)connection:(NSURLConnection*)connection didReceiveResponse:(NSHTTPURLResponse*)resp
@@ -182,8 +249,16 @@ static dispatch_queue_t pngQueue;
   }
   if ([self isVerbose]) DLog(@"fired");
   [self setResponse:resp];
-  MCRelease(data);
-  data = [[NSMutableData alloc] init];
+  [self setHTTPStatus:[resp statusCode]];
+  
+  if ([self filePath]) {
+    [self setInProgressFilePath:[self filePath]];
+  } else {
+    [self setInProgressFilePath:[[NSTemporaryDirectory() stringByAppendingPathComponent:[NSString stringWithFormat:@"%d", abs([[[self myURL] absoluteString] hash])]] retain]];
+  }
+  [[NSFileManager defaultManager] removeItemAtPath:[self inProgressFilePath] error:nil];
+  [[NSFileManager defaultManager] createFileAtPath:[self inProgressFilePath] contents:nil attributes:nil];
+  [self setInProgressFileHandle:[NSFileHandle fileHandleForWritingAtPath:[self inProgressFilePath]]];
   [self setStartTime:[NSDate timeIntervalSinceReferenceDate]];
 }
 
@@ -195,11 +270,15 @@ static dispatch_queue_t pngQueue;
     return;
   }
   if ([self isVerbose]) DLog(@"fired");
-  [data appendData:newData];
+  dispatch_group_async([self dispatchFileWriteGroup], writeQueue, ^{
+    [[self inProgressFileHandle] writeData:newData];
+  });
 }
 
 - (void)connection:(NSURLConnection*)connection didFailWithError:(NSError*)error
 {
+  [[self inProgressFileHandle] closeFile];
+  
   if ([self isCancelled]) {
     [[self connection] cancel];
     [self finish];
@@ -211,6 +290,24 @@ static dispatch_queue_t pngQueue;
   }
   [self setDelegate:nil];
   [self finish];
+}
+
+- (BOOL)connection:(NSURLConnection *)connection canAuthenticateAgainstProtectionSpace:(NSURLProtectionSpace *)protectionSpace {
+    if (([self acceptSelfSignedCertificates]) || ([[self acceptSelfSignedCertificatesFromHosts] count] > 0)) {
+        return [[protectionSpace authenticationMethod] isEqualToString:NSURLAuthenticationMethodServerTrust];
+    } else {
+        return NO;
+    }
+}
+
+- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
+  if (([self acceptSelfSignedCertificates]) || ([[self acceptSelfSignedCertificatesFromHosts] containsObject:[[challenge protectionSpace] host]])) {
+    if ([[[challenge protectionSpace] authenticationMethod] isEqualToString:NSURLAuthenticationMethodServerTrust]) {
+      [[challenge sender] useCredential:[NSURLCredential credentialForTrust:[[challenge protectionSpace] serverTrust]] forAuthenticationChallenge:challenge];
+    } else {
+      [[challenge sender] continueWithoutCredentialForAuthenticationChallenge:challenge];
+    }
+  }
 }
 
 @end

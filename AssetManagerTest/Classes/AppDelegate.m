@@ -31,10 +31,16 @@
 
 #define kFeedHREF @"http://api.flickr.com/services/feeds/groups_pool.gne?id=1621520@N24&lang=en-us&format=rss_200"
 
+@interface AppDelegate ()
+@property (readwrite, retain) GDataXMLDocument *document;
+@end
+
 @implementation AppDelegate
 
 @synthesize assetManager;
 @synthesize window;
+
+@synthesize document;
 
 - (BOOL)application:(UIApplication*)application didFinishLaunchingWithOptions:(NSDictionary*)launchOptions
 {
@@ -60,6 +66,7 @@
   MCRelease(delegate);
   
   assetManager = [[ZSAssetManager alloc] init];
+	[root setAssetManager:assetManager];
   
   return YES;
 }
@@ -69,7 +76,7 @@
   DLog(@"success!");
   
   NSError *error = nil;
-  GDataXMLDocument *document = [[GDataXMLDocument alloc] initWithData:[delegate data] options:0 error:&error];
+  document = [[GDataXMLDocument alloc] initWithData:[delegate data] options:0 error:&error];
   ZAssert(!error || document, @"Error parsing xml: %@", error);
   
   DLog(@"document %@", document);
@@ -86,6 +93,14 @@
     NSURL *url = [NSURL URLWithString:urlString];
     ZAssert(url, @"Bad url: %@", urlString);
     [cacheRequest addObject:url];
+	  
+    GDataXMLElement *mediaThumbnail = [[item elementsForName:@"media:thumbnail"] lastObject];
+    ZAssert(mediaThumbnail, @"Failed to find media thumbnail: %@", item);
+    
+    NSString *thumbnailURLString = [[mediaThumbnail attributeForName:@"url"] stringValue];
+    NSURL *thumbnailURL = [NSURL URLWithString:thumbnailURLString];
+    ZAssert(thumbnailURL, @"Bad URL: %@", thumbnailURLString);
+    [cacheRequest addObject:thumbnailURL];
   }
   
   [assetManager queueAssetsForRetrievalFromURLSet:cacheRequest];
@@ -95,7 +110,6 @@
   id root = [[navController viewControllers] objectAtIndex:0];
   [root populateWithXMLItems:items];
   
-  MCRelease(document);
 }
 
 - (void)feedDownloadFailure:(ZSURLConnectionDelegate*)error
@@ -103,4 +117,9 @@
   ALog(@"Failure: %@", error);
 }
 
+- (void)dealloc
+{
+  MCRelease(document);
+  [super dealloc];
+}
 @end

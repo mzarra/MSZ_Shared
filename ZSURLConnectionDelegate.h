@@ -41,12 +41,13 @@ void decrementNetworkActivity(id sender);
 @property (nonatomic, assign, getter=isVerbose) BOOL verbose;
 @property (nonatomic, assign, getter=isDone) BOOL done;
 
-@property (nonatomic, readonly) NSMutableData *data;
+@property (nonatomic, readonly) NSData *data;
 
 @property (nonatomic, retain) id object;
 @property (nonatomic, retain) NSString *filePath;
 @property (nonatomic, retain) NSURL *myURL;
 @property (nonatomic, retain) NSHTTPURLResponse *response;
+@property (readonly) NSInteger HTTPStatus;
 @property (nonatomic, retain) id delegate;
 
 @property (nonatomic, assign) SEL successSelector;
@@ -56,6 +57,15 @@ void decrementNetworkActivity(id sender);
 @property (nonatomic, assign) NSTimeInterval startTime;
 @property (nonatomic, assign) NSTimeInterval duration;
 
+@property (nonatomic, assign) BOOL acceptSelfSignedCertificates;
+@property (nonatomic, copy) NSArray *acceptSelfSignedCertificatesFromHosts;
+
+@property (readwrite, retain) id userInfo;
+
+- (id)initWithRequest:(NSURLRequest *)newRequest delegate:(id)delegate;
 - (id)initWithURL:(NSURL*)aURL delegate:(id)delegate;
+
++ (id)operationWithRequest:(NSURLRequest *)newRequest delegate:(id)aDelegate;
++ (id)operationWithURL:(NSURL *)aURL delegate:(id)aDelegate;
 
 @end

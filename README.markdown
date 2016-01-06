@@ -2,6 +2,15 @@
 
 In this repository is code that we share between many projects that we work on.  It is licensed under the BSD license and is free to use as you wish. 
 
+## About this fork ##
+
+This fork makes the following changes to ZSURLConnectionDelegate:
+
+* Incoming data is saved to a file rather than kept in memory, which is useful if you're expecting a large download.
+* It's possible to initialize ZSURLConnectionDelegate with an NSURLRequest instead of an NSURL, which is useful if you need to set custom HTTP headers on the request or want to provide a POST body.
+* API has been added to optionally support self-signed HTTPS certificates for all hosts or for specific hosts.
+* A userInfo parameter and some convenience constructors have been added.
+
 ## Prefix.pch ##
 
 You will probably find macros in this code that does not compile.  The reason is that we have several macros that we add to our Prefix.pch file upon project creation.  Those macros are as follows:
