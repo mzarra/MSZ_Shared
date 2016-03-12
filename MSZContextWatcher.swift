@@ -57,7 +57,7 @@ class MSZContextWatcher: NSObject {
     delegate = nil
   }
 
-  func addEntityToWastch(desc: NSEntityDescription, predicate: NSPredicate) {
+  func addEntityToWatch(desc: NSEntityDescription, predicate: NSPredicate) {
     guard let name = desc.name else { fatalError("bad desc") }
     let entityPredicate = NSPredicate(format: "entity.name == %@", name)
 
