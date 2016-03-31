@@ -57,7 +57,7 @@ class MSZContextWatcher: NSObject {
     delegate = nil
   }
 
-  func addEntityToWastch(desc: NSEntityDescription, predicate: NSPredicate) {
+  func addEntityToWatch(desc: NSEntityDescription, predicate: NSPredicate) {
     guard let name = desc.name else { fatalError("bad desc") }
     let entityPredicate = NSPredicate(format: "entity.name == %@", name)
 
@@ -90,19 +90,20 @@ class MSZContextWatcher: NSObject {
 
     var results = [String:[NSManagedObject]]()
     var totalCount = 0
-    if let insert = info?[NSInsertedObjectsKey] as? [NSManagedObject] {
+    
+    if let insert = info?[NSInsertedObjectsKey] as? Set<NSManagedObject> {
       let filter = insert.filter{ return predicate.evaluateWithObject($0) }
       totalCount += filter.count
       results[NSInsertedObjectsKey] = filter
     }
 
-    if let update = info?[NSUpdatedObjectsKey] as? [NSManagedObject] {
+    if let update = info?[NSUpdatedObjectsKey] as? Set<NSManagedObject> {
       let filter = update.filter{ return predicate.evaluateWithObject($0) }
       totalCount += filter.count
       results[NSUpdatedObjectsKey] = filter
     }
 
-    if let delete = info?[NSDeletedObjectsKey] as? [NSManagedObject] {
+    if let delete = info?[NSDeletedObjectsKey] as? Set<NSManagedObject> {
       let filter = delete.filter{ return predicate.evaluateWithObject($0) }
       totalCount += filter.count
       results[NSDeletedObjectsKey] = filter
